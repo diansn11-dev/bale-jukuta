@@ -13,7 +13,7 @@ type Product = {
   price: number;
   stock?: number;
   rating?: number;
-  badge?: string;
+  badge?: string | null;
   category?: string;
 };
 
@@ -58,25 +58,7 @@ export default function ProductCard({ product }: { product: Product }) {
             "
           />
 
-          {product.badge && (
-            <span
-              className="
-                absolute
-                left-1.5
-                top-1.5
-                rounded-full
-                bg-sky-700
-                px-2
-                py-0.5
-                text-[9px]
-                font-semibold
-                text-white
-                sm:text-xs
-              "
-            >
-              {product.badge}
-            </span>
-          )}
+          {product.badge && <span>{product.badge}</span>}
         </div>
       </Link>
 
