@@ -1,101 +1,116 @@
 "use client";
 
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
-type StatCardProps = {
+type Props = {
   title: string;
   value: string | number;
-  icon: any;
+  desc: string;
+  icon: LucideIcon;
   color: string;
-  description?: string;
-  trend?: "up" | "down";
 };
 
 export default function StatCard({
   title,
   value,
+  desc,
   icon: Icon,
   color,
-  description,
-  trend,
-}: StatCardProps) {
+}: Props) {
+  const colors: any = {
+    blue: "bg-blue-50 text-blue-700",
+
+    indigo: "bg-indigo-50 text-indigo-700",
+
+    purple: "bg-purple-50 text-purple-700",
+
+    green: "bg-green-50 text-green-700",
+
+    cyan: "bg-cyan-50 text-cyan-700",
+
+    yellow: "bg-yellow-50 text-yellow-700",
+
+    orange: "bg-orange-50 text-orange-700",
+
+    emerald: "bg-emerald-50 text-emerald-700",
+
+    red: "bg-red-50 text-red-700",
+  };
+
   return (
     <div
       className="
-        rounded-2xl
-        bg-white
-        p-3
-        shadow-sm
-        sm:p-5
-      "
+rounded-2xl
+border
+bg-white
+p-3
+
+shadow-sm
+
+transition
+hover:shadow-md
+
+md:p-4
+"
     >
       <div
         className="
-          flex
-          items-center
-          justify-between
-        "
+flex
+items-center
+justify-between
+"
       >
         <div
           className={`
-            flex
-            h-9
-            w-9
-            items-center
-            justify-center
-            rounded-xl
-            sm:h-11
-            sm:w-11
-            ${color}
-          `}
+flex
+h-9
+w-9
+items-center
+justify-center
+
+rounded-xl
+
+${colors[color]}
+`}
         >
-          <Icon size={20} className="sm:h-6 sm:w-6" />
+          <Icon size={19} />
         </div>
-
-        {trend &&
-          (trend === "up" ? (
-            <TrendingUp size={16} className="text-green-600" />
-          ) : (
-            <TrendingDown size={16} className="text-red-600" />
-          ))}
       </div>
 
-      <div className="mt-3">
-        <p
-          className="
-            text-xs
-            text-gray-500
-            sm:text-sm
-          "
-        >
-          {title}
-        </p>
+      <p
+        className="
+mt-3
+text-xs
+font-medium
+text-gray-500
+"
+      >
+        {title}
+      </p>
 
-        <h3
-          className="
-            mt-1
-            text-lg
-            font-bold
-            text-gray-900
-            sm:text-2xl
-          "
-        >
-          {value}
-        </h3>
+      <h2
+        className="
+mt-1
 
-        {description && (
-          <p
-            className="
-              mt-1
-              truncate
-              text-xs
-              text-gray-400
-            "
-          >
-            {description}
-          </p>
-        )}
-      </div>
+text-lg
+font-bold
+text-gray-800
+
+md:text-xl
+"
+      >
+        {value}
+      </h2>
+
+      <p
+        className="
+mt-1
+text-[11px]
+text-gray-400
+"
+      >
+        {desc}
+      </p>
     </div>
   );
 }

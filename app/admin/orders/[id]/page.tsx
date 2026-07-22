@@ -1,308 +1,237 @@
-import { notFound } from "next/navigation";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import {
+  ArrowLeft,
+  User,
+  Phone,
+  MapPin,
+  Package,
+  CheckCircle2,
+} from "lucide-react";
 
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import OrderStatusSelect from "@/components/OrderStatusSelect";
+import OrderStatusSelect from "@/components/admin/OrderStatusSelect";
 
-type Props = {
+export default async function OrderDetailPage({
+  params,
+}: {
   params: Promise<{
     id: string;
   }>;
-};
-
-type OrderItem = {
-  id: number;
-  product_name: string;
-  quantity: number | null;
-  price: number | null;
-  subtotal: number | null;
-};
-
-export default async function OrderDetailPage({ params }: Props) {
+}) {
   const { id } = await params;
+
+  const orderId = Number(id);
 
   const { data: order, error } = await supabaseAdmin
     .from("orders")
     .select(
       `
-      *,
-      order_items (
-        *
-      )
-      `,
+ *,
+ order_items(
+    id,
+    product_name,
+    quantity,
+    price,
+    subtotal
+ )
+`,
     )
-    .eq("id", id)
+    .eq("id", orderId)
     .single();
 
   if (error || !order) {
-    notFound();
-  }
-
-  function statusStyle(status: string) {
-    switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-700";
-
-      case "processed":
-        return "bg-blue-100 text-blue-700";
-
-      case "shipped":
-        return "bg-purple-100 text-purple-700";
-
-      case "completed":
-        return "bg-green-100 text-green-700";
-
-      case "cancelled":
-        return "bg-red-100 text-red-700";
-
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  }
-
-  function statusText(status: string) {
-    switch (status) {
-      case "pending":
-        return "Menunggu Diproses";
-
-      case "processed":
-        return "Sedang Diproses";
-
-      case "shipped":
-        return "Sedang Dikirim";
-
-      case "completed":
-        return "Selesai";
-
-      case "cancelled":
-        return "Dibatalkan";
-
-      default:
-        return status;
-    }
+    return (
+      <div className="rounded-xl bg-white p-6">Pesanan tidak ditemukan</div>
+    );
   }
 
   return (
-    <main
-      className="
-        mx-auto
-        max-w-6xl
-        space-y-8
-        p-10
-      "
-    >
+    <main className="space-y-6">
       {/* HEADER */}
 
-      <div
-        className="
-          flex
-          items-center
-          justify-between
-        "
-      >
-        <div>
-          <h1
-            className="
-              text-4xl
-              font-bold
-              text-sky-700
-            "
-          >
-            Detail Pesanan #{order.id}
-          </h1>
-
-          <p className="text-gray-500">Informasi lengkap transaksi pelanggan</p>
-        </div>
-
-        <Link
-          href="/admin/orders"
-          className="
-            rounded-xl
-            border
-            px-5
-            py-3
-            hover:bg-gray-50
-          "
-        >
-          Kembali
-        </Link>
-      </div>
-
-      {/* DATA PEMBELI */}
-
       <section
         className="
-          rounded-2xl
-          border
-          bg-white
-          p-6
-          shadow
-        "
+rounded-3xl
+border
+bg-white
+p-6
+shadow-sm
+"
       >
-        <h2
+        <div
           className="
-            mb-5
-            text-2xl
-            font-bold
-          "
+flex
+flex-col
+gap-4
+md:flex-row
+md:items-center
+md:justify-between
+"
         >
-          Data Pembeli
-        </h2>
-
-        <div className="space-y-3">
-          <p>
-            <b>Nama :</b> {order.customer_name ?? "-"}
-          </p>
-
-          <p>
-            <b>WhatsApp :</b> {order.customer_phone ?? "-"}
-          </p>
-
-          <p>
-            <b>Alamat :</b> {order.customer_address ?? "-"}
-          </p>
-
-          <p>
-            <b>Status :</b>{" "}
-            <span
-              className={`
-                rounded-full
-                px-3
-                py-1
-                text-sm
-                font-semibold
-                ${statusStyle(order.status ?? "")}
-              `}
+          <div>
+            <h1
+              className="
+text-3xl
+font-bold
+text-sky-700
+"
             >
-              {statusText(order.status ?? "")}
-            </span>
-          </p>
+              Detail Pesanan #{order.id}
+            </h1>
 
-          <p>
-            <b>Catatan :</b> {order.note || "-"}
-          </p>
+            <p className="mt-2 text-gray-500">Informasi transaksi pelanggan</p>
+          </div>
 
-          <p>
-            <b>Tanggal :</b>{" "}
-            {new Date(order.created_at).toLocaleDateString("id-ID", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
-            })}
-          </p>
-
-          <p>
-            <b>Jam :</b>{" "}
-            {new Date(order.created_at).toLocaleTimeString("id-ID", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}{" "}
-            WITA
-          </p>
+          <Link
+            href="/admin/orders"
+            className="
+flex
+items-center
+gap-2
+rounded-xl
+border
+px-4
+py-3
+"
+          >
+            <ArrowLeft size={18} />
+            Kembali
+          </Link>
         </div>
       </section>
 
-      {/* UPDATE STATUS */}
-
-      <section>
-        <h2
-          className="
-            mb-3
-            text-xl
-            font-bold
-          "
-        >
-          Update Status Pesanan
-        </h2>
-
-        <OrderStatusSelect orderId={order.id} currentStatus={order.status} />
-      </section>
-
-      {/* PRODUK */}
+      {/* CUSTOMER */}
 
       <section
         className="
-          overflow-hidden
-          rounded-2xl
-          border
-          bg-white
-          shadow
-        "
+grid
+gap-5
+md:grid-cols-3
+"
       >
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-sky-700 text-white">
-              <tr>
-                <th className="p-4 text-left">Produk</th>
+        <div className="rounded-2xl bg-white border p-5">
+          <User className="text-sky-700" />
 
-                <th className="p-4 text-center">Qty</th>
+          <h3 className="mt-3 font-bold">Nama</h3>
 
-                <th className="p-4 text-right">Harga</th>
+          <p>{order.customer_name}</p>
+        </div>
 
-                <th className="p-4 text-right">Subtotal</th>
-              </tr>
-            </thead>
+        <div className="rounded-2xl bg-white border p-5">
+          <Phone className="text-sky-700" />
 
-            <tbody>
-              {order.order_items && order.order_items.length > 0 ? (
-                (order.order_items as OrderItem[]).map((item) => (
-                  <tr key={item.id} className="border-b">
-                    <td className="p-4 font-medium">{item.product_name}</td>
+          <h3 className="mt-3 font-bold">WhatsApp</h3>
 
-                    <td className="p-4 text-center">{item.quantity ?? 1} Kg</td>
+          <p>{order.customer_phone}</p>
+        </div>
 
-                    <td className="p-4 text-right">
-                      Rp {Number(item.price ?? 0).toLocaleString("id-ID")}
-                    </td>
+        <div className="rounded-2xl bg-white border p-5">
+          <MapPin className="text-sky-700" />
 
-                    <td className="p-4 text-right font-bold">
-                      Rp {Number(item.subtotal ?? 0).toLocaleString("id-ID")}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={4}
-                    className="
-                      p-8
-                      text-center
-                      text-gray-500
-                    "
-                  >
-                    Tidak ada produk
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          <h3 className="mt-3 font-bold">Alamat</h3>
+
+          <p>{order.customer_address}</p>
+        </div>
+      </section>
+
+      {/* STATUS */}
+
+      <section
+        className="
+rounded-2xl
+border
+bg-white
+p-5
+"
+      >
+        <h2 className="mb-3 font-bold">Status Pesanan</h2>
+
+        <OrderStatusSelect orderId={order.id} status={order.status} />
+      </section>
+
+      {/* ITEM */}
+
+      <section
+        className="
+rounded-3xl
+border
+bg-white
+p-6
+"
+      >
+        <div
+          className="
+flex
+items-center
+gap-2
+mb-5
+"
+        >
+          <Package />
+
+          <h2 className="text-xl font-bold">Produk Dibeli</h2>
+        </div>
+
+        <div
+          className="
+space-y-4
+"
+        >
+          {order.order_items?.map((item: any) => (
+            <div
+              key={item.id}
+              className="
+rounded-2xl
+bg-gray-50
+p-4
+"
+            >
+              <div
+                className="
+flex
+justify-between
+"
+              >
+                <h3 className="font-bold">{item.product_name}</h3>
+
+                <p>{item.quantity} Kg</p>
+              </div>
+
+              <div className="mt-2 text-sm text-gray-500">
+                Harga/Kg: Rp {Number(item.price).toLocaleString("id-ID")}
+              </div>
+
+              <div className="font-semibold mt-2">
+                Subtotal: Rp {Number(item.subtotal).toLocaleString("id-ID")}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* TOTAL */}
 
-      <div
+      <section
         className="
-          flex
-          justify-end
-        "
+rounded-3xl
+bg-sky-700
+p-6
+text-white
+"
       >
-        <div
-          className="
-            rounded-xl
-            bg-sky-700
-            px-8
-            py-5
-            text-white
-          "
-        >
-          <p className="text-xl font-bold">Total :</p>
+        <h2 className="text-xl">Total Pembayaran</h2>
 
-          <p className="text-3xl font-bold">
-            Rp {Number(order.total_price ?? 0).toLocaleString("id-ID")}
-          </p>
-        </div>
-      </div>
+        <p
+          className="
+mt-2
+text-3xl
+font-bold
+"
+        >
+          Rp {Number(order.total_price).toLocaleString("id-ID")}
+        </p>
+      </section>
     </main>
   );
 }

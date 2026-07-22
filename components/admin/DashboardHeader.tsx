@@ -16,70 +16,138 @@ export default function DashboardHeader({ adminName = "Admin" }: Props) {
   }).format(new Date());
 
   return (
-    <header className="rounded-3xl bg-white p-6 shadow-sm border">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        {/* Left */}
+    <section
+      className="
+        rounded-2xl
+        bg-white
+        border
+        shadow-sm
+        p-4
+        md:p-5
+      "
+    >
+      <div
+        className="
+          flex
+          flex-col
+          gap-4
+
+          lg:flex-row
+          lg:items-center
+          lg:justify-between
+        "
+      >
+        {/* LEFT */}
         <div>
-          <h1 className="text-3xl font-bold text-sky-700">
+          <h1
+            className="
+              text-xl
+              font-bold
+              text-gray-800
+
+              md:text-2xl
+            "
+          >
             Selamat Datang, {adminName} 👋
           </h1>
 
-          <p className="mt-2 text-gray-500">
-            Kelola produk, pesanan, pelanggan, dan laporan Bale Juku' Ta' dari
-            satu dashboard.
+          <p
+            className="
+              mt-1
+              max-w-xl
+              text-sm
+              text-gray-500
+            "
+          >
+            Kelola produk ikan, pesanan pelanggan, dan laporan Bale Juku' Ta'.
           </p>
 
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-sky-50 px-4 py-2 text-sm text-sky-700">
-            <CalendarDays size={16} />
+          <div
+            className="
+              mt-3
+              inline-flex
+              items-center
+              gap-2
+
+              rounded-full
+              bg-sky-50
+              px-3
+              py-1.5
+
+              text-xs
+              font-medium
+              text-sky-700
+            "
+          >
+            <CalendarDays size={15} />
+
             {today}
           </div>
         </div>
 
-        {/* Right */}
-        <div className="flex flex-wrap gap-3">
+        {/* ACTION */}
+        <div
+          className="
+            flex
+            flex-wrap
+            gap-2
+
+            lg:justify-end
+          "
+        >
           <Link
             href="/admin/products/new"
             className="
-              inline-flex
+              flex
               items-center
               gap-2
+
               rounded-xl
               bg-emerald-600
-              px-5
-              py-3
+
+              px-4
+              py-2.5
+
+              text-sm
               font-semibold
               text-white
+
               transition
               hover:bg-emerald-700
             "
           >
-            <Plus size={18} />
-            Tambah Produk
+            <Plus size={17} />
+            Produk
           </Link>
 
           <Link
             href="/admin/orders"
             className="
-              inline-flex
+              flex
               items-center
               gap-2
+
               rounded-xl
               bg-sky-700
-              px-5
-              py-3
+
+              px-4
+              py-2.5
+
+              text-sm
               font-semibold
               text-white
+
               transition
               hover:bg-sky-800
             "
           >
-            <ShoppingCart size={18} />
-            Kelola Pesanan
+            <ShoppingCart size={17} />
+            Pesanan
           </Link>
 
           <LogoutButton />
         </div>
       </div>
-    </header>
+    </section>
   );
 }

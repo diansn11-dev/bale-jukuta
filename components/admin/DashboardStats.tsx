@@ -38,93 +38,97 @@ export default function DashboardStats({
   completedOrders,
   cancelledOrders,
 }: DashboardStatsProps) {
+  const stats = [
+    {
+      title: "Produk",
+      value: totalProducts,
+      desc: "Ikan tersedia",
+      icon: Package,
+      color: "blue",
+    },
+
+    {
+      title: "Pesanan",
+      value: totalOrders,
+      desc: "Total order",
+      icon: ShoppingCart,
+      color: "indigo",
+    },
+
+    {
+      title: "Pelanggan",
+      value: totalCustomers,
+      desc: "Customer",
+      icon: Users,
+      color: "purple",
+    },
+
+    {
+      title: "Omzet",
+      value: `Rp ${totalRevenue.toLocaleString("id-ID")}`,
+      desc: "Selesai",
+      icon: Wallet,
+      color: "green",
+    },
+
+    {
+      title: "Hari Ini",
+      value: todayOrders,
+      desc: `Rp ${todayRevenue.toLocaleString("id-ID")}`,
+      icon: ShoppingCart,
+      color: "cyan",
+    },
+
+    {
+      title: "Pending",
+      value: pendingOrders,
+      desc: "Menunggu",
+      icon: Clock3,
+      color: "yellow",
+    },
+
+    {
+      title: "Diproses",
+      value: processingOrders,
+      desc: "Berjalan",
+      icon: Truck,
+      color: "orange",
+    },
+
+    {
+      title: "Selesai",
+      value: completedOrders,
+      desc: "Berhasil",
+      icon: CheckCircle2,
+      color: "emerald",
+    },
+
+    {
+      title: "Batal",
+      value: cancelledOrders,
+      desc: "Dibatalkan",
+      icon: XCircle,
+      color: "red",
+    },
+  ];
+
   return (
     <section
       className="
         grid
         grid-cols-2
         gap-3
-        sm:gap-4
-        lg:grid-cols-4
-        lg:gap-6
+
+        md:grid-cols-3
+
+        xl:grid-cols-4
+
+        md:gap-5
       "
     >
-      <StatCard
-        title="Produk"
-        value={totalProducts}
-        icon={Package}
-        color="bg-blue-100 text-blue-700"
-        description="Ikan tersedia"
-      />
-
-      <StatCard
-        title="Pesanan"
-        value={totalOrders}
-        icon={ShoppingCart}
-        color="bg-indigo-100 text-indigo-700"
-        description="Total order"
-      />
-
-      <StatCard
-        title="Omzet"
-        value={`Rp ${totalRevenue.toLocaleString("id-ID")}`}
-        icon={Wallet}
-        color="bg-green-100 text-green-700"
-        description="Selesai"
-        trend="up"
-      />
-
-      <StatCard
-        title="Pelanggan"
-        value={totalCustomers}
-        icon={Users}
-        color="bg-purple-100 text-purple-700"
-        description="Pelanggan"
-      />
-
-      {/* STATUS ORDER */}
-
-      <StatCard
-        title="Hari Ini"
-        value={todayOrders}
-        icon={ShoppingCart}
-        color="bg-cyan-100 text-cyan-700"
-        description={`Rp ${todayRevenue.toLocaleString("id-ID")}`}
-      />
-
-      <StatCard
-        title="Pending"
-        value={pendingOrders}
-        icon={Clock3}
-        color="bg-yellow-100 text-yellow-700"
-        description="Menunggu"
-      />
-
-      <StatCard
-        title="Diproses"
-        value={processingOrders}
-        icon={Truck}
-        color="bg-orange-100 text-orange-700"
-        description="Berjalan"
-      />
-
-      <StatCard
-        title="Selesai"
-        value={completedOrders}
-        icon={CheckCircle2}
-        color="bg-emerald-100 text-emerald-700"
-        description="Berhasil"
-        trend="up"
-      />
-
-      <StatCard
-        title="Batal"
-        value={cancelledOrders}
-        icon={XCircle}
-        color="bg-red-100 text-red-700"
-        description="Dibatalkan"
-        trend="down"
-      />
+      {stats.map((item) => (
+        <StatCard key={item.title} {...item} />
+      ))}
     </section>
   );
 }

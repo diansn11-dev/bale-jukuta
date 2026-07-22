@@ -1,15 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { AlertTriangle, Package, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { AlertTriangle, ArrowRight, Package } from "lucide-react";
 
 type Product = {
   id: number;
   name: string;
-  stock: number | string;
-  price?: number | string;
   image?: string | null;
+  stock: number;
 };
 
 type Props = {
@@ -17,122 +16,235 @@ type Props = {
 };
 
 export default function DashboardRight({ products }: Props) {
-  function formatPrice(price?: number | string) {
-    return `Rp ${Number(price ?? 0).toLocaleString("id-ID")}`;
-  }
-
-  function getStockBadge(stock: number) {
-    if (stock <= 2) {
-      return {
-        text: "Kritis",
-        color: "bg-red-100 text-red-700",
-      };
-    }
-
-    if (stock <= 5) {
-      return {
-        text: "Menipis",
-        color: "bg-yellow-100 text-yellow-700",
-      };
-    }
-
-    return {
-      text: "Aman",
-      color: "bg-green-100 text-green-700",
-    };
-  }
-
   return (
-    <aside className="rounded-3xl border bg-white p-6 shadow-sm">
-      <div className="mb-5 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <AlertTriangle size={20} className="text-orange-600" />
+    <section
+      className="
+rounded-2xl
+border
+bg-white
+p-4
+shadow-sm
 
-          <h2 className="text-lg font-semibold">Stok Hampir Habis</h2>
+md:p-5
+"
+    >
+      {/* HEADER */}
+
+      <div
+        className="
+mb-5
+flex
+items-center
+justify-between
+"
+      >
+        <div
+          className="
+flex
+items-center
+gap-3
+"
+        >
+          <div
+            className="
+flex
+h-10
+w-10
+items-center
+justify-center
+
+rounded-xl
+bg-red-50
+text-red-600
+"
+          >
+            <AlertTriangle size={22} />
+          </div>
+
+          <div>
+            <h2
+              className="
+font-bold
+text-gray-800
+"
+            >
+              Stok Menipis
+            </h2>
+
+            <p
+              className="
+text-xs
+text-gray-500
+"
+            >
+              Perlu segera dicek
+            </p>
+          </div>
         </div>
 
         <Link
           href="/admin/products"
-          className="flex items-center gap-1 text-sm font-medium text-sky-700 hover:text-sky-900"
+          className="
+text-sm
+font-semibold
+text-sky-700
+"
         >
-          Lihat Semua
-          <ArrowRight size={16} />
+          Lihat
         </Link>
       </div>
 
-      <div className="space-y-4">
-        {products.length === 0 ? (
-          <div className="rounded-2xl border border-dashed p-8 text-center">
-            <Package size={40} className="mx-auto mb-3 text-gray-300" />
+      {products.length === 0 ? (
+        <div
+          className="
+rounded-xl
+bg-green-50
+p-5
+text-center
+"
+        >
+          <Package
+            size={35}
+            className="
+mx-auto
+mb-2
+text-green-600
+"
+          />
 
-            <p className="text-sm text-gray-500">
-              Semua stok produk masih aman.
-            </p>
-          </div>
-        ) : (
-          products.map((product) => {
-            const stock = Number(product.stock);
-            const badge = getStockBadge(stock);
+          <p
+            className="
+font-semibold
+text-green-700
+"
+          >
+            Semua stok aman
+          </p>
+        </div>
+      ) : (
+        <div
+          className="
+space-y-3
+"
+        >
+          {products.slice(0, 5).map((product) => (
+            <div
+              key={product.id}
+              className="
+flex
+items-center
+gap-3
 
-            return (
+rounded-xl
+border
+p-3
+
+transition
+hover:bg-gray-50
+"
+            >
+              {/* IMAGE */}
+
               <div
-                key={product.id}
-                className="flex items-center gap-4 rounded-2xl border p-3 transition hover:shadow-md"
+                className="
+relative
+h-12
+w-12
+overflow-hidden
+rounded-lg
+bg-gray-100
+"
               >
-                <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-gray-100">
-                  {product.image ? (
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-xs text-gray-400">
-                      No Image
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1">
-                  <h3 className="font-semibold">{product.name}</h3>
-
-                  {product.price !== undefined && (
-                    <p className="text-sm text-gray-500">
-                      {formatPrice(product.price)}
-                    </p>
-                  )}
-
-                  <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-200">
-                    <div
-                      className={`h-full ${
-                        stock <= 2
-                          ? "bg-red-500"
-                          : stock <= 5
-                            ? "bg-yellow-500"
-                            : "bg-green-500"
-                      }`}
-                      style={{
-                        width: `${Math.min(stock * 10, 100)}%`,
-                      }}
-                    />
+                {product.image ? (
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="
+object-cover
+"
+                  />
+                ) : (
+                  <div
+                    className="
+flex
+h-full
+items-center
+justify-center
+text-gray-400
+"
+                  >
+                    🐟
                   </div>
-
-                  <p className="mt-1 text-xs text-gray-500">
-                    Sisa stok: <strong>{stock}</strong>
-                  </p>
-                </div>
-
-                <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${badge.color}`}
-                >
-                  {badge.text}
-                </span>
+                )}
               </div>
-            );
-          })
-        )}
-      </div>
-    </aside>
+
+              {/* NAME */}
+
+              <div
+                className="
+flex-1
+"
+              >
+                <h3
+                  className="
+line-clamp-1
+text-sm
+font-semibold
+text-gray-800
+"
+                >
+                  {product.name}
+                </h3>
+
+                <p
+                  className="
+text-xs
+text-gray-500
+"
+                >
+                  Sisa stok:
+                  <span
+                    className="
+font-bold
+text-red-600
+"
+                  >
+                    {" "}
+                    {product.stock} Kg
+                  </span>
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <Link
+        href="/admin/products"
+        className="
+mt-5
+flex
+items-center
+justify-center
+gap-2
+
+rounded-xl
+
+bg-sky-700
+py-2.5
+
+text-sm
+font-semibold
+text-white
+
+transition
+hover:bg-sky-800
+"
+      >
+        Kelola Produk
+        <ArrowRight size={16} />
+      </Link>
+    </section>
   );
 }

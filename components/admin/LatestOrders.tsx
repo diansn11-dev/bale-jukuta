@@ -14,13 +14,12 @@ import {
 type Order = {
   id: number;
   customer_name?: string | null;
-  name?: string | null;
   total_price?: number | string | null;
   status?: string | null;
   created_at?: string | null;
 };
 
-type LatestOrdersProps = {
+type Props = {
   orders: Order[];
 };
 
@@ -30,167 +29,352 @@ const currency = new Intl.NumberFormat("id-ID", {
   maximumFractionDigits: 0,
 });
 
-export default function LatestOrders({ orders }: LatestOrdersProps) {
-  function formatPrice(value?: number | string | null) {
+export default function LatestOrders({ orders }: Props) {
+  function price(value: any) {
     return currency.format(Number(value ?? 0));
   }
 
-  function formatDate(date?: string | null) {
-    if (!date) return "-";
+  function date(value?: string | null) {
+    if (!value) return "-";
 
     return new Intl.DateTimeFormat("id-ID", {
       day: "2-digit",
       month: "short",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(date));
+    }).format(new Date(value));
   }
 
-  function getStatus(status?: string | null) {
-    switch (status) {
+  function status(value?: string | null) {
+    switch (value) {
       case "pending":
         return {
           text: "Pending",
-          color: "bg-yellow-100 text-yellow-700",
           icon: Clock3,
+          color: "bg-yellow-100 text-yellow-700",
         };
 
       case "diproses":
       case "processing":
         return {
           text: "Diproses",
-          color: "bg-blue-100 text-blue-700",
           icon: PackageCheck,
+          color: "bg-blue-100 text-blue-700",
         };
 
       case "dikirim":
       case "shipped":
         return {
           text: "Dikirim",
-          color: "bg-purple-100 text-purple-700",
           icon: Truck,
+          color: "bg-purple-100 text-purple-700",
         };
 
       case "completed":
       case "selesai":
         return {
           text: "Selesai",
-          color: "bg-green-100 text-green-700",
           icon: CheckCircle2,
+          color: "bg-green-100 text-green-700",
         };
 
       case "cancelled":
       case "dibatalkan":
         return {
-          text: "Dibatalkan",
-          color: "bg-red-100 text-red-700",
+          text: "Batal",
           icon: XCircle,
+          color: "bg-red-100 text-red-700",
         };
 
       default:
         return {
-          text: status ?? "-",
-          color: "bg-gray-100 text-gray-700",
+          text: "-",
           icon: Clock3,
+          color: "bg-gray-100 text-gray-600",
         };
     }
   }
 
   return (
-    <div className="rounded-3xl border bg-white p-6 shadow-sm">
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Pesanan Terbaru</h2>
+    <section
+      className="
+rounded-2xl
+border
+bg-white
+p-4
+shadow-sm
 
-          <p className="mt-1 text-sm text-gray-500">
-            Daftar pesanan terbaru pelanggan.
+md:p-6
+"
+    >
+      {/* HEADER */}
+
+      <div
+        className="
+mb-5
+flex
+items-center
+justify-between
+"
+      >
+        <div>
+          <h2
+            className="
+text-lg
+font-bold
+text-gray-800
+"
+          >
+            Pesanan Terbaru
+          </h2>
+
+          <p
+            className="
+text-sm
+text-gray-500
+"
+          >
+            Order pelanggan terbaru
           </p>
         </div>
 
         <Link
           href="/admin/orders"
-          className="flex items-center gap-2 text-sm font-semibold text-sky-700 transition hover:text-sky-900"
+          className="
+flex
+items-center
+gap-1
+text-sm
+font-semibold
+text-sky-700
+"
         >
-          Lihat Semua
+          Lihat
           <ArrowRight size={16} />
         </Link>
       </div>
 
-      {/* Empty */}
       {orders.length === 0 ? (
-        <div className="rounded-2xl border border-dashed py-12 text-center">
-          <ShoppingBag size={46} className="mx-auto mb-4 text-gray-300" />
-
-          <h3 className="font-semibold text-gray-700">Belum ada pesanan</h3>
-
-          <p className="mt-2 text-sm text-gray-500">
-            Pesanan pelanggan akan muncul di sini.
-          </p>
+        <div
+          className="
+py-10
+text-center
+text-gray-500
+"
+        >
+          <ShoppingBag size={40} className="mx-auto mb-3" />
+          Belum ada pesanan
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full">
-            <thead>
-              <tr className="border-b text-left text-sm text-gray-500">
-                <th className="pb-4 font-semibold">Pelanggan</th>
+        <>
+          {/* MOBILE CARD */}
 
-                <th className="pb-4 font-semibold">Total</th>
+          <div
+            className="
+space-y-3
+md:hidden
+"
+          >
+            {orders.slice(0, 10).map((order) => (
+              <div
+                key={order.id}
+                className="
+rounded-xl
+border
+p-4
+"
+              >
+                <div
+                  className="
+flex
+justify-between
+"
+                >
+                  <div>
+                    <h3
+                      className="
+font-semibold
+text-gray-800
+"
+                    >
+                      {order.customer_name ?? "Pelanggan"}
+                    </h3>
 
-                <th className="pb-4 font-semibold">Status</th>
+                    <p
+                      className="
+text-xs
+text-gray-400
+"
+                    >
+                      {date(order.created_at)}
+                    </p>
+                  </div>
 
-                <th className="pb-4 font-semibold">Tanggal</th>
-
-                <th className="pb-4 text-right font-semibold">Aksi</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {orders.map((order) => {
-                const status = getStatus(order.status);
-                const Icon = status.icon;
-
-                return (
-                  <tr
-                    key={order.id}
-                    className="border-b transition hover:bg-sky-50"
+                  <span
+                    className="
+font-bold
+text-sky-700
+"
                   >
-                    <td className="py-4 font-medium text-gray-900">
-                      {order.customer_name ?? order.name ?? "Pelanggan"}
-                    </td>
+                    {price(order.total_price)}
+                  </span>
+                </div>
 
-                    <td className="py-4">{formatPrice(order.total_price)}</td>
+                <div className="mt-3">
+                  {(() => {
+                    const s = status(order.status);
+                    const Icon = s.icon;
 
-                    <td className="py-4">
+                    return (
                       <span
-                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${status.color}`}
+                        className={`
+inline-flex
+items-center
+gap-2
+rounded-full
+px-3
+py-1
+text-xs
+font-medium
+
+${s.color}
+`}
                       >
                         <Icon size={14} />
-                        {status.text}
+
+                        {s.text}
                       </span>
-                    </td>
+                    );
+                  })()}
+                </div>
 
-                    <td className="py-4 text-sm text-gray-500">
-                      {formatDate(order.created_at)}
-                    </td>
+                <Link
+                  href={`/admin/orders/${order.id}`}
+                  className="
+mt-3
+flex
+items-center
+justify-center
+gap-2
 
-                    <td className="py-4 text-right">
-                      <Link
-                        href={`/admin/orders/${order.id}`}
-                        className="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-700"
-                      >
-                        Detail
-                        <ArrowRight size={15} />
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+rounded-lg
+
+bg-sky-700
+py-2
+
+text-sm
+font-semibold
+text-white
+"
+                >
+                  Detail
+                  <ArrowRight size={15} />
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* DESKTOP TABLE */}
+
+          <div
+            className="
+hidden
+overflow-x-auto
+md:block
+"
+          >
+            <table
+              className="
+w-full
+text-sm
+"
+            >
+              <thead>
+                <tr
+                  className="
+border-b
+text-left
+text-gray-500
+"
+                >
+                  <th className="py-3">Pelanggan</th>
+
+                  <th>Total</th>
+
+                  <th>Status</th>
+
+                  <th>Tanggal</th>
+
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {orders.slice(0, 10).map((order) => {
+                  const s = status(order.status);
+                  const Icon = s.icon;
+
+                  return (
+                    <tr
+                      key={order.id}
+                      className="
+border-b
+hover:bg-sky-50
+"
+                    >
+                      <td className="py-4 font-medium">
+                        {order.customer_name ?? "Pelanggan"}
+                      </td>
+
+                      <td>{price(order.total_price)}</td>
+
+                      <td>
+                        <span
+                          className={`
+inline-flex
+items-center
+gap-2
+rounded-full
+px-3
+py-1
+text-xs
+
+${s.color}
+`}
+                        >
+                          <Icon size={14} />
+
+                          {s.text}
+                        </span>
+                      </td>
+
+                      <td className="text-gray-500">
+                        {date(order.created_at)}
+                      </td>
+
+                      <td className="text-right">
+                        <Link
+                          href={`/admin/orders/${order.id}`}
+                          className="
+rounded-lg
+bg-sky-700
+px-3
+py-2
+text-xs
+font-semibold
+text-white
+"
+                        >
+                          Detail
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
-    </div>
+    </section>
   );
 }

@@ -105,13 +105,20 @@ export default async function AdminDashboard() {
   // ==========================
 
   return (
-    <main className="space-y-6">
+    <main
+      className="
+      space-y-6
+      lg:space-y-8
+    "
+    >
+      {/* HEADER */}
       <DashboardHeader
         adminName={
           user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "Admin"
         }
       />
 
+      {/* STATISTIK */}
       <DashboardStats
         totalProducts={totalProducts}
         totalOrders={totalOrders}
@@ -125,12 +132,28 @@ export default async function AdminDashboard() {
         cancelledOrders={cancelledOrders}
       />
 
-      <section className="grid gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2">
+      {/* CONTENT */}
+      <section
+        className="
+        grid
+        gap-6
+        lg:grid-cols-3
+        lg:items-start
+      "
+      >
+        {/* PESANAN */}
+        <div
+          className="
+          lg:col-span-2
+        "
+        >
           <LatestOrders orders={orders.slice(0, 10)} />
         </div>
 
-        <DashboardRight products={lowStockProducts} />
+        {/* STOK */}
+        <div>
+          <DashboardRight products={lowStockProducts} />
+        </div>
       </section>
     </main>
   );

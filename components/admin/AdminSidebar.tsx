@@ -45,29 +45,28 @@ export default function AdminSidebar() {
 
   return (
     <>
-      {/* MOBILE HEADER */}
-
+      {/* MOBILE TOPBAR */}
       <div
         className="
-  sticky
-  top-0
-  z-30
-  flex
-  h-14
-  items-center
-  justify-between
-  bg-white
-  px-4
-  shadow
-  md:hidden
-"
+          sticky
+          top-0
+          z-30
+          flex
+          h-16
+          items-center
+          justify-between
+          bg-white
+          px-4
+          shadow-sm
+          md:hidden
+        "
       >
         <h1
           className="
-          text-lg
-          font-bold
-          text-sky-700
-        "
+            text-lg
+            font-bold
+            text-sky-700
+          "
         >
           Bale Juku' Ta'
         </h1>
@@ -75,17 +74,16 @@ export default function AdminSidebar() {
         <button
           onClick={() => setOpen(true)}
           className="
-            rounded-lg
+            rounded-xl
             p-2
             hover:bg-gray-100
           "
         >
-          <Menu size={24} />
+          <Menu size={25} />
         </button>
       </div>
 
-      {/* OVERLAY MOBILE */}
-
+      {/* OVERLAY */}
       {open && (
         <div
           onClick={() => setOpen(false)}
@@ -94,70 +92,71 @@ export default function AdminSidebar() {
             inset-0
             z-40
             bg-black/40
+            backdrop-blur-sm
             md:hidden
           "
         />
       )}
 
       {/* SIDEBAR */}
-
       <aside
         className={`
           fixed
           left-0
           top-0
           z-50
+          flex
           h-screen
-          w-64
+          w-72
+          flex-col
           bg-white
           shadow-xl
           transition-transform
           duration-300
 
-          md:static
+          md:sticky
           md:translate-x-0
 
           ${open ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        {/* HEADER SIDEBAR */}
-
+        {/* BRAND */}
         <div
           className="
-          flex
-          items-center
-          justify-between
-          border-b
-          p-5
-        "
-        >
-          <h1
-            className="
-            text-xl
-            font-bold
-            text-sky-700
+            flex
+            h-20
+            items-center
+            justify-between
+            border-b
+            px-6
           "
-          >
-            Bale Juku' Ta'
-          </h1>
+        >
+          <div>
+            <h1
+              className="
+                text-xl
+                font-bold
+                text-sky-700
+              "
+            >
+              Bale Juku' Ta'
+            </h1>
 
-          <button
-            onClick={() => setOpen(false)}
-            className="
-              md:hidden
-            "
-          >
+            <p className="text-xs text-gray-400">Admin Panel</p>
+          </div>
+
+          <button onClick={() => setOpen(false)} className="md:hidden">
             <X size={22} />
           </button>
         </div>
 
         {/* MENU */}
-
         <nav
           className="
-          space-y-2
-          p-4
-        "
+            flex-1
+            space-y-2
+            p-5
+          "
         >
           {menus.map((menu) => {
             const Icon = menu.icon;
@@ -168,25 +167,56 @@ export default function AdminSidebar() {
                 href={menu.href}
                 onClick={() => setOpen(false)}
                 className="
+                  group
                   flex
                   items-center
-                  gap-3
+                  gap-4
                   rounded-xl
                   px-4
                   py-3
-                  text-gray-700
+                  text-gray-600
                   transition
+
                   hover:bg-sky-50
                   hover:text-sky-700
                 "
               >
-                <Icon size={20} />
+                <Icon
+                  size={21}
+                  className="
+                    transition
+                    group-hover:scale-110
+                  "
+                />
 
-                <span>{menu.name}</span>
+                <span
+                  className="
+                    font-medium
+                  "
+                >
+                  {menu.name}
+                </span>
               </Link>
             );
           })}
         </nav>
+
+        {/* FOOTER */}
+        <div
+          className="
+            border-t
+            p-5
+          "
+        >
+          <p
+            className="
+              text-xs
+              text-gray-400
+            "
+          >
+            © Bale Juku' Ta'
+          </p>
+        </div>
       </aside>
     </>
   );
