@@ -16,7 +16,7 @@ export default function Hero() {
       <div className="absolute -left-32 top-20 h-96 w-96 rounded-full bg-cyan-400/20 blur-3xl" />
       <div className="absolute -right-32 bottom-10 h-96 w-96 rounded-full bg-blue-200/20 blur-3xl" />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:py-28">
+      <div className="relative mx-auto grid min-h-[760px] max-w-screen-2xl items-center gap-16 px-8 py-20 lg:grid-cols-2 lg:px-12">
         {/* ========================= */}
         {/* KIRI */}
         {/* ========================= */}
@@ -27,7 +27,17 @@ export default function Hero() {
             FRESH & FROZEN
           </span>
 
-          <h1 className="mt-8 text-5xl font-extrabold leading-tight lg:text-3xl sm:text-5xl lg:text-6xl">
+          <h1
+            className="
+mt-8
+text-4xl
+font-extrabold
+leading-tight
+sm:text-5xl
+lg:text-7xl
+xl:text-8xl
+"
+          >
             Ikan Segar
             <br />
             Berkualitas
@@ -35,7 +45,16 @@ export default function Hero() {
             Langsung dari Laut
           </h1>
 
-          <p className="mt-6 max-w-xl text-lg text-blue-100">
+          <p
+            className="
+mt-8
+max-w-2xl
+text-lg
+leading-9
+text-blue-100
+lg:text-xl
+"
+          >
             Bale Juku' Ta' menyediakan berbagai pilihan ikan segar dan frozen
             berkualitas dengan harga terbaik untuk keluarga, restoran, maupun
             usaha kuliner.
@@ -46,7 +65,7 @@ export default function Hero() {
           <div className="mt-10 flex flex-wrap gap-4">
             <Link
               href="/produk"
-              className="flex items-center gap-3 rounded-xl bg-white px-8 py-4 font-bold text-sky-700 shadow-xl transition hover:scale-105"
+              className="flex items-center gap-3 rounded-xl bg-white px-10 py-5 text-lg font-bold text-sky-700 shadow-xl transition hover:scale-105"
             >
               <ShoppingBag size={22} />
               Belanja Sekarang
@@ -54,7 +73,7 @@ export default function Hero() {
 
             <Link
               href="/kontak"
-              className="flex items-center gap-3 rounded-xl border-2 border-white px-8 py-4 font-bold text-white transition hover:bg-white hover:text-sky-700"
+              className="flex items-center gap-3 rounded-xl border-2 border-white px-10 py-5 text-lg font-bold text-white transition hover:bg-white hover:text-sky-700"
             >
               <Phone size={22} />
               Hubungi Kami
@@ -103,15 +122,21 @@ export default function Hero() {
         {/* ========================= */}
 
         <div className="relative flex justify-center">
-          <div className="absolute h-[520px] w-[520px] rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute h-[700px] w-[700px] rounded-full bg-white/10 blur-3xl" />
 
           <Image
             src="/hero-fish.png"
             alt="Ikan Segar Bale Juku Ta"
-            width={900}
-            height={700}
+            width={1200}
+            height={900}
             priority
-            className="relative z-10 w-full max-w-[700px] drop-shadow-[0_30px_40px_rgba(0,0,0,.35)]"
+            className="
+      relative
+      z-10
+      w-full
+      max-w-[900px]
+      drop-shadow-[0_35px_60px_rgba(0,0,0,.35)]
+    "
           />
         </div>
       </div>
