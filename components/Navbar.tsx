@@ -19,133 +19,248 @@ export default function Navbar() {
   const { cartCount } = useCart();
   const [isOpen, setIsOpen] = useState(false);
 
+  const menus = [
+    {
+      name: "Beranda",
+      href: "/",
+      icon: Home,
+    },
+    {
+      name: "Produk",
+      href: "/produk",
+      icon: Fish,
+    },
+    {
+      name: "Tentang",
+      href: "/tentang",
+      icon: Info,
+    },
+    {
+      name: "Kontak",
+      href: "/kontak",
+      icon: Phone,
+    },
+    {
+      name: "Cek Pesanan",
+      href: "/cek-pesanan",
+      icon: ClipboardCheck,
+    },
+  ];
+
   return (
-    <nav className="sticky top-0 z-50 bg-sky-700 text-white shadow-lg">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3">
+    <nav
+      className="
+        sticky
+        top-0
+        z-50
+        bg-sky-700
+        text-white
+        shadow-lg
+      "
+    >
+      <div
+        className="
+          mx-auto
+          flex
+          h-16
+          max-w-7xl
+          items-center
+          justify-between
+          px-4
+          sm:px-6
+        "
+      >
+        {/* LOGO */}
+
+        <Link
+          href="/"
+          className="
+            flex
+            items-center
+            gap-2
+          "
+        >
           <Image
             src="/logo.png"
-            alt="Bale Juku' Ta'"
-            width={90}
-            height={90}
-            className="rounded-full"
+            alt="Bale Juku Ta'"
+            width={42}
+            height={42}
+            className="
+              rounded-full
+              object-cover
+              sm:h-12
+              sm:w-12
+            "
           />
 
-          <span className="text-2xl font-bold">Bale Juku' Ta'</span>
+          <span
+            className="
+              text-base
+              font-bold
+              sm:text-xl
+            "
+          >
+            Bale Juku' Ta'
+          </span>
         </Link>
 
-        {/* Menu Desktop */}
-        <div className="hidden items-center gap-8 md:flex">
-          <Link href="/" className="flex items-center gap-2 hover:text-sky-200">
-            <Home size={18} />
-            Beranda
-          </Link>
+        {/* DESKTOP MENU */}
+
+        <div
+          className="
+            hidden
+            items-center
+            gap-6
+            md:flex
+          "
+        >
+          {menus.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="
+                  flex
+                  items-center
+                  gap-2
+                  text-sm
+                  hover:text-sky-200
+                "
+              >
+                <Icon size={17} />
+
+                {item.name}
+              </Link>
+            );
+          })}
+
+          {/* CART */}
 
           <Link
-            href="/produk"
-            className="flex items-center gap-2 hover:text-sky-200"
+            href="/keranjang"
+            className="
+              relative
+            "
           >
-            <Fish size={18} />
-            Produk
-          </Link>
-
-          <Link
-            href="/tentang"
-            className="flex items-center gap-2 hover:text-sky-200"
-          >
-            <Info size={18} />
-            Tentang
-          </Link>
-
-          <Link
-            href="/kontak"
-            className="flex items-center gap-2 hover:text-sky-200"
-          >
-            <Phone size={18} />
-            Kontak
-          </Link>
-
-          <Link
-            href="/cek-pesanan"
-            className="flex items-center gap-2 hover:text-sky-200"
-          >
-            <ClipboardCheck size={18} />
-            Cek Pesanan
-          </Link>
-
-          {/* Keranjang */}
-          <Link href="/keranjang" className="relative">
             <ShoppingCart size={24} />
 
             {cartCount > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold">
+              <span
+                className="
+                  absolute
+                  -right-2
+                  -top-2
+                  flex
+                  h-5
+                  w-5
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-red-500
+                  text-xs
+                  font-bold
+                "
+              >
                 {cartCount}
               </span>
             )}
           </Link>
         </div>
 
-        {/* Mobile Button */}
-        <div className="flex items-center gap-4 md:hidden">
+        {/* MOBILE */}
+
+        <div
+          className="
+            flex
+            items-center
+            gap-4
+            md:hidden
+          "
+        >
           <Link href="/keranjang" className="relative">
-            <ShoppingCart size={24} />
+            <ShoppingCart size={22} />
 
             {cartCount > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold">
+              <span
+                className="
+                  absolute
+                  -right-2
+                  -top-2
+                  flex
+                  h-5
+                  w-5
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-red-500
+                  text-[10px]
+                  font-bold
+                "
+              >
                 {cartCount}
               </span>
             )}
           </Link>
 
-          <button onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="
+              rounded-lg
+              p-1
+              hover:bg-sky-600
+            "
+          >
+            {isOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
       </div>
 
-      {/* Menu Mobile */}
+      {/* MOBILE MENU */}
+
       {isOpen && (
-        <div className="border-t border-sky-600 bg-sky-700 md:hidden">
-          <Link
-            href="/"
-            className="block px-6 py-4 hover:bg-sky-600"
-            onClick={() => setIsOpen(false)}
+        <div
+          className="
+            border-t
+            border-sky-600
+            bg-sky-700
+            px-4
+            py-3
+            md:hidden
+          "
+        >
+          <div
+            className="
+              space-y-1
+            "
           >
-            🏠 Beranda
-          </Link>
+            {menus.map((item) => {
+              const Icon = item.icon;
 
-          <Link
-            href="/produk"
-            className="block px-6 py-4 hover:bg-sky-600"
-            onClick={() => setIsOpen(false)}
-          >
-            🐟 Produk
-          </Link>
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className="
+                    flex
+                    items-center
+                    gap-3
+                    rounded-xl
+                    px-3
+                    py-3
+                    text-sm
+                    hover:bg-sky-600
+                  "
+                >
+                  <Icon size={18} />
 
-          <Link
-            href="/tentang"
-            className="block px-6 py-4 hover:bg-sky-600"
-            onClick={() => setIsOpen(false)}
-          >
-            ℹ️ Tentang
-          </Link>
-
-          <Link
-            href="/kontak"
-            className="block px-6 py-4 hover:bg-sky-600"
-            onClick={() => setIsOpen(false)}
-          >
-            📞 Kontak
-          </Link>
-
-          <Link
-            href="/cek-pesanan"
-            className="block px-6 py-4 hover:bg-sky-600"
-            onClick={() => setIsOpen(false)}
-          >
-            📦 Cek Pesanan
-          </Link>
+                  {item.name}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       )}
     </nav>

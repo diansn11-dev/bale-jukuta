@@ -61,9 +61,25 @@ export default function ProdukClient({ products }: Props) {
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-12">
+    <main
+      className="
+    mx-auto
+    max-w-7xl
+    px-4
+    py-8
+    sm:px-6
+    sm:py-12
+  "
+    >
       <div className="mb-10 text-center">
-        <h1 className="text-4xl font-bold text-sky-700">
+        <h1
+          className="
+    text-2xl
+    font-bold
+    text-sky-700
+    sm:text-4xl
+  "
+        >
           Produk Bale Juku' Ta'
         </h1>
 
@@ -72,7 +88,15 @@ export default function ProdukClient({ products }: Props) {
         </p>
       </div>
 
-      <div className="rounded-3xl bg-white p-6 shadow-lg">
+      <div
+        className="
+    rounded-2xl
+    bg-white
+    p-4
+    shadow-lg
+    sm:p-6
+  "
+      >
         <div className="grid gap-4 lg:grid-cols-4">
           <div className="relative">
             <Search
@@ -142,9 +166,17 @@ export default function ProdukClient({ products }: Props) {
           <p className="mt-2 text-gray-500">Coba gunakan kata kunci lain.</p>
         </div>
       ) : (
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div
+          className="
+    grid
+    grid-cols-2
+    gap-3
+    sm:gap-5
+    xl:grid-cols-4
+  "
+        >
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}

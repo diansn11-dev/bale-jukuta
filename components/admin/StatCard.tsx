@@ -1,10 +1,12 @@
-import { LucideIcon, TrendingUp, TrendingDown } from "lucide-react";
+"use client";
 
-type Props = {
+import { TrendingUp, TrendingDown } from "lucide-react";
+
+type StatCardProps = {
   title: string;
   value: string | number;
-  icon: LucideIcon;
-  color?: string;
+  icon: any;
+  color: string;
   description?: string;
   trend?: "up" | "down";
 };
@@ -13,61 +15,86 @@ export default function StatCard({
   title,
   value,
   icon: Icon,
-  color = "bg-sky-100 text-sky-700",
+  color,
   description,
   trend,
-}: Props) {
+}: StatCardProps) {
   return (
     <div
       className="
         rounded-2xl
-        border
-        border-gray-200
         bg-white
-        p-6
+        p-3
         shadow-sm
-        transition-all
-        duration-300
-        hover:-translate-y-1
-        hover:shadow-lg
+        sm:p-5
       "
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-
-          <h2 className="mt-2 text-3xl font-bold text-gray-900">{value}</h2>
-
-          {description && (
-            <p className="mt-2 text-sm text-gray-500">{description}</p>
-          )}
-
-          {trend && (
-            <div className="mt-3 flex items-center gap-1">
-              {trend === "up" ? (
-                <>
-                  <TrendingUp size={16} className="text-green-600" />
-                  <span className="text-sm font-medium text-green-600">
-                    Meningkat
-                  </span>
-                </>
-              ) : (
-                <>
-                  <TrendingDown size={16} className="text-red-600" />
-                  <span className="text-sm font-medium text-red-600">
-                    Menurun
-                  </span>
-                </>
-              )}
-            </div>
-          )}
-        </div>
-
+      <div
+        className="
+          flex
+          items-center
+          justify-between
+        "
+      >
         <div
-          className={`flex h-14 w-14 items-center justify-center rounded-xl ${color}`}
+          className={`
+            flex
+            h-9
+            w-9
+            items-center
+            justify-center
+            rounded-xl
+            sm:h-11
+            sm:w-11
+            ${color}
+          `}
         >
-          <Icon size={28} />
+          <Icon size={20} className="sm:h-6 sm:w-6" />
         </div>
+
+        {trend &&
+          (trend === "up" ? (
+            <TrendingUp size={16} className="text-green-600" />
+          ) : (
+            <TrendingDown size={16} className="text-red-600" />
+          ))}
+      </div>
+
+      <div className="mt-3">
+        <p
+          className="
+            text-xs
+            text-gray-500
+            sm:text-sm
+          "
+        >
+          {title}
+        </p>
+
+        <h3
+          className="
+            mt-1
+            text-lg
+            font-bold
+            text-gray-900
+            sm:text-2xl
+          "
+        >
+          {value}
+        </h3>
+
+        {description && (
+          <p
+            className="
+              mt-1
+              truncate
+              text-xs
+              text-gray-400
+            "
+          >
+            {description}
+          </p>
+        )}
       </div>
     </div>
   );

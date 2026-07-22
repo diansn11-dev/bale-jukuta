@@ -26,15 +26,7 @@ export default async function EditProductPage({
 
   if (!product) {
     return (
-      <div
-        className="
-          rounded-xl
-          bg-white
-          p-6
-        "
-      >
-        Produk tidak ditemukan
-      </div>
+      <div className="rounded-xl bg-white p-6">Produk tidak ditemukan</div>
     );
   }
 
@@ -44,32 +36,27 @@ export default async function EditProductPage({
 
       <div
         className="
-          flex
-          flex-col
-          gap-4
-          md:flex-row
-          md:items-center
-          md:justify-between
-        "
+        flex
+        flex-col
+        gap-4
+        md:flex-row
+        md:items-center
+        md:justify-between
+      "
       >
         <div>
           <h1
             className="
-              text-3xl
-              font-bold
-              text-gray-800
-            "
+            text-3xl
+            font-bold
+            text-gray-800
+          "
           >
             Edit Produk
           </h1>
 
-          <p
-            className="
-              text-sm
-              text-gray-500
-            "
-          >
-            Perbarui data produk Bale Juku' Ta'
+          <p className="text-sm text-gray-500">
+            Perbarui data ikan Bale Juku' Ta'
           </p>
         </div>
 
@@ -91,20 +78,29 @@ export default async function EditProductPage({
 
       <div
         className="
-          rounded-2xl
-          border
-          bg-white
-          p-6
-          shadow-sm
-        "
+        rounded-2xl
+        border
+        bg-white
+        p-6
+        shadow-sm
+      "
       >
         <form
           action={updateProduct.bind(null, product.id)}
           className="space-y-5"
         >
+          {/* NAMA */}
+
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Nama Produk
+            <label
+              className="
+              mb-2
+              block
+              text-sm
+              font-medium
+            "
+            >
+              Nama Ikan
             </label>
 
             <input
@@ -118,16 +114,94 @@ export default async function EditProductPage({
                 px-4
                 py-3
               "
+              placeholder="Contoh: Kakap Lodi"
             />
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium">Slug</label>
+          {/* HARGA & STOK */}
 
-            <input
-              name="slug"
-              required
-              defaultValue={product.slug}
+          <div
+            className="
+            grid
+            grid-cols-1
+            gap-5
+            md:grid-cols-2
+          "
+          >
+            <div>
+              <label
+                className="
+                mb-2
+                block
+                text-sm
+                font-medium
+              "
+              >
+                Harga / Kg
+              </label>
+
+              <input
+                type="number"
+                name="price"
+                min="0"
+                required
+                defaultValue={product.price}
+                className="
+                  w-full
+                  rounded-xl
+                  border
+                  px-4
+                  py-3
+                "
+              />
+            </div>
+
+            <div>
+              <label
+                className="
+                mb-2
+                block
+                text-sm
+                font-medium
+              "
+              >
+                Stok / Kg
+              </label>
+
+              <input
+                type="number"
+                name="stock"
+                min="0"
+                required
+                defaultValue={product.stock}
+                className="
+                  w-full
+                  rounded-xl
+                  border
+                  px-4
+                  py-3
+                "
+              />
+            </div>
+          </div>
+
+          {/* CATEGORY */}
+
+          <div>
+            <label
+              className="
+              mb-2
+              block
+              text-sm
+              font-medium
+            "
+            >
+              Kategori
+            </label>
+
+            <select
+              name="category"
+              defaultValue={product.category}
               className="
                 w-full
                 rounded-xl
@@ -135,86 +209,79 @@ export default async function EditProductPage({
                 px-4
                 py-3
               "
-            />
+            >
+              <option value="Fresh">Fresh</option>
+
+              <option value="Frozen">Frozen</option>
+            </select>
           </div>
 
-          <div
-            className="
-              grid
-              grid-cols-1
-              gap-5
-              md:grid-cols-2
-            "
-          >
-            <input
-              type="number"
-              name="price"
-              required
-              defaultValue={product.price}
-              placeholder="Harga"
+          {/* BADGE */}
+
+          <div>
+            <label
               className="
+              mb-2
+              block
+              text-sm
+              font-medium
+            "
+            >
+              Label Produk
+            </label>
+
+            <select
+              name="badge"
+              defaultValue={product.badge}
+              className="
+                w-full
                 rounded-xl
                 border
                 px-4
                 py-3
               "
-            />
+            >
+              <option value="">Tidak Ada</option>
 
-            <input
-              type="number"
-              name="stock"
-              min="0"
-              required
-              defaultValue={product.stock}
-              placeholder="Stok"
-              className="rounded-xl border px-4 py-3"
-            />
+              <option value="Terlaris">Terlaris</option>
+
+              <option value="Promo">Promo</option>
+
+              <option value="Fresh">Fresh</option>
+
+              <option value="Best Seller">Best Seller</option>
+            </select>
           </div>
 
-          <select
-            name="category"
-            defaultValue={product.category}
-            className="w-full rounded-xl border px-4 py-3"
-          >
-            <option value="Fresh">Fresh</option>
-            <option value="Frozen">Frozen</option>
-          </select>
+          {/* DESKRIPSI */}
 
-          <input
-            type="number"
-            name="price"
-            min="0"
-            required
-            defaultValue={product.price}
-            placeholder="Harga"
-            className="rounded-xl border px-4 py-3"
-          />
-
-          <select
-            name="badge"
-            defaultValue={product.badge}
-            className="w-full rounded-xl border px-4 py-3"
-          >
-            <option value="">Tidak Ada</option>
-            <option value="Terlaris">Terlaris</option>
-            <option value="Promo">Promo</option>
-            <option value="Fresh">Fresh</option>
-            <option value="Best Seller">Best Seller</option>
-          </select>
-
-          <textarea
-            name="description"
-            required
-            defaultValue={product.description}
-            rows={5}
-            className="
-              w-full
-              rounded-xl
-              border
-              px-4
-              py-3
+          <div>
+            <label
+              className="
+              mb-2
+              block
+              text-sm
+              font-medium
             "
-          />
+            >
+              Deskripsi
+            </label>
+
+            <textarea
+              name="description"
+              required
+              defaultValue={product.description}
+              rows={5}
+              className="
+                w-full
+                rounded-xl
+                border
+                px-4
+                py-3
+              "
+              placeholder="Deskripsi ikan..."
+            />
+          </div>
 
           {/* FOTO LAMA */}
 
@@ -224,12 +291,12 @@ export default async function EditProductPage({
 
               <div
                 className="
-                    relative
-                    h-40
-                    w-40
-                    overflow-hidden
-                    rounded-xl
-                  "
+                relative
+                h-40
+                w-40
+                overflow-hidden
+                rounded-xl
+              "
               >
                 <Image
                   src={product.image}
@@ -244,14 +311,29 @@ export default async function EditProductPage({
           {/* FOTO BARU */}
 
           <div>
-            <p className="mb-2 text-sm">Ganti Foto (opsional)</p>
+            <label
+              className="
+              mb-2
+              block
+              text-sm
+              font-medium
+            "
+            >
+              Ganti Foto (Opsional)
+            </label>
 
             <input
               type="file"
               name="image"
-              accept="image/png,image/jpeg,image/webp"
+              accept="
+                image/png,
+                image/jpeg,
+                image/webp
+              "
             />
           </div>
+
+          {/* BUTTON */}
 
           <button
             type="submit"

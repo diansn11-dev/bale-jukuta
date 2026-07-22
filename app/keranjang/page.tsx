@@ -70,7 +70,7 @@ export default function KeranjangPage() {
 
       const pesanWhatsApp = `
 
-Halo Bale Juku' Ta' 👋
+Halo Admin!
 
 Saya ingin melakukan pemesanan.
 
@@ -128,7 +128,6 @@ ${catatan || "-"}
 
 Terima kasih.
 
-Bale Juku' Ta'
 `;
 
       clearCart();

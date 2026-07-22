@@ -61,6 +61,7 @@ async function refreshPages() {
   revalidatePath("/");
   revalidatePath("/produk");
   revalidatePath("/admin/products");
+  revalidatePath("/admin/products/[id]/edit", "page");
 }
 
 // ========================================
@@ -144,7 +145,9 @@ export async function createProduct(formData: FormData) {
 export async function updateProduct(id: number, formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
 
-  const slug = generateSlug(name);
+  const slugInput = String(formData.get("slug") ?? "").trim();
+
+  const slug = slugInput ? generateSlug(slugInput) : generateSlug(name);
 
   const price = validateNumber(String(formData.get("price")), "Harga");
 

@@ -27,7 +27,7 @@ export default function Hero() {
             FRESH & FROZEN
           </span>
 
-          <h1 className="mt-8 text-5xl font-extrabold leading-tight lg:text-6xl">
+          <h1 className="mt-8 text-5xl font-extrabold leading-tight lg:text-3xl sm:text-5xl lg:text-6xl">
             Ikan Segar
             <br />
             Berkualitas

@@ -2,132 +2,208 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
-import { Star, Fish, ShoppingCart } from "lucide-react";
-
+import { ShoppingCart, Star } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 type Product = {
   id: number;
-  slug: string;
   name: string;
+  slug: string;
   image: string;
   price: number;
-  category: string;
-  badge: string | null;
-  rating: number;
-  stock: number;
+  stock?: number;
+  rating?: number;
+  badge?: string;
+  category?: string;
 };
 
-export default function ProductCard({
-  id,
-  slug,
-  name,
-  image,
-  price,
-  category,
-  badge,
-  rating,
-  stock,
-}: Product) {
+export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
 
-  function handleAddToCart() {
-    if (stock === 0) return;
-
-    addToCart({
-      id,
-      name,
-      price,
-      image,
-      quantity: 1,
-      stock,
-    });
-
-    alert(`${name} berhasil ditambahkan ke keranjang`);
-  }
-
   return (
-    <div className="group overflow-hidden rounded-2xl bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-      {/* GAMBAR */}
-      <div className="relative">
-        <Image
-          src={image}
-          alt={name}
-          width={500}
-          height={400}
-          className="h-64 w-full object-cover transition duration-500 group-hover:scale-105"
-        />
+    <div
+      className="
+        group
+        overflow-hidden
+        rounded-xl
+        border
+        bg-white
+        shadow-sm
+        transition
+        hover:shadow-md
+      "
+    >
+      {/* IMAGE */}
 
-        {/* BADGE */}
-        {badge && (
-          <span className="absolute left-3 top-3 rounded-full bg-sky-700 px-3 py-1 text-xs font-semibold text-white">
-            {badge}
-          </span>
-        )}
-      </div>
+      <Link href={`/produk/${product.slug}`}>
+        <div
+          className="
+            relative
+            h-28
+            w-full
+            overflow-hidden
+            xs:h-32
+            sm:h-52
+          "
+        >
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="
+              object-cover
+              transition
+              duration-300
+              group-hover:scale-105
+            "
+          />
 
-      {/* DETAIL */}
-      <div className="p-5">
-        {/* KATEGORI */}
-        <div className="mb-2 flex items-center gap-2 text-gray-500">
-          <Fish size={18} />
-          <span>{category}</span>
-        </div>
-
-        {/* NAMA */}
-        <h2 className="text-xl font-bold text-gray-800">{name}</h2>
-
-        {/* RATING */}
-        <div className="mt-2 flex items-center gap-1">
-          {Array.from({ length: rating }).map((_, index) => (
-            <Star
-              key={index}
-              size={16}
-              className="fill-yellow-400 text-yellow-400"
-            />
-          ))}
-        </div>
-
-        {/* HARGA */}
-        <p className="mt-4 text-2xl font-bold text-sky-700">
-          Rp {price.toLocaleString("id-ID")}
-        </p>
-
-        {/* STOK */}
-        <div className="mt-3">
-          {stock > 0 ? (
-            <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
-              ✓ Stok tersedia ({stock} Kg)
-            </span>
-          ) : (
-            <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-700">
-              ✕ Stok habis
+          {product.badge && (
+            <span
+              className="
+                absolute
+                left-1.5
+                top-1.5
+                rounded-full
+                bg-sky-700
+                px-2
+                py-0.5
+                text-[9px]
+                font-semibold
+                text-white
+                sm:text-xs
+              "
+            >
+              {product.badge}
             </span>
           )}
         </div>
+      </Link>
 
-        {/* BUTTON DETAIL */}
-        <Link
-          href={`/produk/${slug}`}
-          className="mt-5 block rounded-xl bg-sky-700 py-3 text-center font-semibold text-white transition hover:bg-sky-800"
+      {/* CONTENT */}
+
+      <div
+        className="
+          p-2.5
+          sm:p-5
+        "
+      >
+        <h3
+          className="
+            line-clamp-1
+            text-xs
+            font-bold
+            text-gray-800
+            sm:line-clamp-2
+            sm:text-lg
+          "
         >
-          Lihat Detail
-        </Link>
+          {product.name}
+        </h3>
 
-        {/* BUTTON CART */}
+        {product.category && (
+          <p
+            className="
+              mt-1
+              text-[10px]
+              text-gray-500
+              sm:text-xs
+            "
+          >
+            {product.category}
+          </p>
+        )}
+
+        {/* RATING */}
+
+        <div
+          className="
+            mt-1
+            flex
+            items-center
+            gap-1
+          "
+        >
+          <Star
+            size={11}
+            className="fill-yellow-400 text-yellow-400 sm:size-[13px]"
+          />
+
+          <span
+            className="
+              text-[10px]
+              text-gray-500
+              sm:text-xs
+            "
+          >
+            {product.rating ?? 5}
+          </span>
+        </div>
+
+        {/* PRICE */}
+
+        <div className="mt-1">
+          <p
+            className="
+              text-sm
+              font-bold
+              text-sky-700
+              sm:text-xl
+            "
+          >
+            Rp {product.price.toLocaleString("id-ID")}
+          </p>
+
+          <p
+            className="
+              text-[9px]
+              text-gray-400
+              sm:text-[11px]
+            "
+          >
+            /Kg
+          </p>
+        </div>
+
+        {/* BUTTON */}
+
         <button
-          onClick={handleAddToCart}
-          disabled={stock === 0}
-          className={`mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-3 font-semibold text-white transition ${
-            stock > 0
-              ? "bg-blue-600 hover:bg-blue-700"
-              : "cursor-not-allowed bg-gray-400"
-          }`}
+          onClick={() =>
+            addToCart({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              image: product.image,
+              quantity: 1,
+              stock: product.stock ?? 0,
+            })
+          }
+          disabled={(product.stock ?? 0) <= 0}
+          className="
+            mt-2
+            flex
+            w-full
+            items-center
+            justify-center
+            gap-1
+            rounded-lg
+            bg-sky-700
+            py-2
+            text-[10px]
+            font-semibold
+            text-white
+            transition
+            hover:bg-sky-800
+            disabled:bg-gray-300
+            sm:mt-3
+            sm:rounded-xl
+            sm:py-2.5
+            sm:text-sm
+          "
         >
-          <ShoppingCart size={20} />
+          <ShoppingCart size={13} />
 
-          {stock > 0 ? "Tambah Keranjang" : "Stok Habis"}
+          {(product.stock ?? 0) > 0 ? "Tambah" : "Habis"}
         </button>
       </div>
     </div>

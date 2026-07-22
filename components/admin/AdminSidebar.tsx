@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import LogoutButton from "./LogoutButton";
-
+import { useState } from "react";
 import {
   LayoutDashboard,
   Fish,
   ShoppingCart,
   Users,
   BarChart3,
+  Menu,
+  X,
 } from "lucide-react";
 
 const menus = [
@@ -41,61 +41,153 @@ const menus = [
 ];
 
 export default function AdminSidebar() {
-  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   return (
-    <aside className="flex h-screen w-64 flex-col bg-sky-700 text-white shadow-xl">
-      {/* Header */}
-      <div className="border-b border-sky-600 p-6">
-        <h1 className="text-2xl font-bold">Bale Juku' Ta'</h1>
+    <>
+      {/* MOBILE HEADER */}
 
-        <p className="mt-1 text-sm text-sky-100">Admin Panel</p>
-      </div>
-
-      {/* Menu */}
-      <nav className="mt-6 flex-1 space-y-1 px-3">
-        {menus.map((menu) => {
-          const Icon = menu.icon;
-
-          const active =
-            pathname === menu.href ||
-            (menu.href !== "/admin" && pathname.startsWith(menu.href));
-
-          return (
-            <Link
-              key={menu.href}
-              href={menu.href}
-              className={`
-                flex items-center gap-3
-                rounded-xl
-                px-4
-                py-3
-                transition-all
-                ${
-                  active
-                    ? "bg-white text-sky-700 font-semibold shadow"
-                    : "text-white hover:bg-sky-600"
-                }
-              `}
-            >
-              <Icon size={20} />
-
-              <span>{menu.name}</span>
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Footer */}
-      <div className="border-t border-sky-600 p-5">
-        <LogoutButton />
-
-        <p className="mt-4 text-center text-xs text-sky-100">
+      <div
+        className="
+  sticky
+  top-0
+  z-30
+  flex
+  h-14
+  items-center
+  justify-between
+  bg-white
+  px-4
+  shadow
+  md:hidden
+"
+      >
+        <h1
+          className="
+          text-lg
+          font-bold
+          text-sky-700
+        "
+        >
           Bale Juku' Ta'
-          <br />
-          Admin System v1.0
-        </p>
+        </h1>
+
+        <button
+          onClick={() => setOpen(true)}
+          className="
+            rounded-lg
+            p-2
+            hover:bg-gray-100
+          "
+        >
+          <Menu size={24} />
+        </button>
       </div>
-    </aside>
+
+      {/* OVERLAY MOBILE */}
+
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          className="
+            fixed
+            inset-0
+            z-40
+            bg-black/40
+            md:hidden
+          "
+        />
+      )}
+
+      {/* SIDEBAR */}
+
+      <aside
+        className={`
+          fixed
+          left-0
+          top-0
+          z-50
+          h-screen
+          w-64
+          bg-white
+          shadow-xl
+          transition-transform
+          duration-300
+
+          md:static
+          md:translate-x-0
+
+          ${open ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+        {/* HEADER SIDEBAR */}
+
+        <div
+          className="
+          flex
+          items-center
+          justify-between
+          border-b
+          p-5
+        "
+        >
+          <h1
+            className="
+            text-xl
+            font-bold
+            text-sky-700
+          "
+          >
+            Bale Juku' Ta'
+          </h1>
+
+          <button
+            onClick={() => setOpen(false)}
+            className="
+              md:hidden
+            "
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        {/* MENU */}
+
+        <nav
+          className="
+          space-y-2
+          p-4
+        "
+        >
+          {menus.map((menu) => {
+            const Icon = menu.icon;
+
+            return (
+              <Link
+                key={menu.href}
+                href={menu.href}
+                onClick={() => setOpen(false)}
+                className="
+                  flex
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-4
+                  py-3
+                  text-gray-700
+                  transition
+                  hover:bg-sky-50
+                  hover:text-sky-700
+                "
+              >
+                <Icon size={20} />
+
+                <span>{menu.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+    </>
   );
 }
