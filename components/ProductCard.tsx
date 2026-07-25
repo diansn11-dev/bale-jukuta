@@ -16,6 +16,13 @@ type Product = {
   delivery_type?: string;
   badge?: string | null;
   rating: number;
+
+  product_variants?: {
+    id: number;
+    weight: string;
+    price: number;
+    stock: number;
+  }[];
 };
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -28,6 +35,17 @@ export default function ProductCard({ product }: { product: Product }) {
   const isFrozen = product.category.includes("Frozen");
 
   const isPreOrder = product.delivery_type === "preorder";
+
+  const hasVariant =
+    product.product_variants && product.product_variants.length > 0;
+
+  const variantStock =
+    product.product_variants?.reduce(
+      (total, variant) => total + variant.stock,
+      0,
+    ) ?? 0;
+
+  const displayStock = hasVariant ? variantStock : product.stock;
 
   return (
     <div
@@ -80,7 +98,7 @@ export default function ProductCard({ product }: { product: Product }) {
               </span>
             )}
 
-            {product.stock <= 0 ? (
+            {(hasVariant ? variantStock : product.stock) <= 0 ? (
               <span className="rounded-full bg-red-600 px-2 py-1 text-[10px] font-bold text-white shadow">
                 STOK HABIS
               </span>
@@ -192,8 +210,7 @@ export default function ProductCard({ product }: { product: Product }) {
             <p className="mt-2 text-xs font-medium text-gray-500">
               Stok :
               <span className="font-bold text-sky-700">
-                {" "}
-                {product.stock} Kg
+                {isChicken ? `${displayStock} Ekor` : `${displayStock} Kg`}
               </span>
             </p>
 
@@ -228,7 +245,12 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* BUTTON */}
 
         <button
-          onClick={() =>
+          onClick={() => {
+            if (hasVariant) {
+              window.location.href = `/produk/${product.slug}`;
+              return;
+            }
+
             addToCart({
               id: product.id,
               name: product.name,
@@ -236,34 +258,33 @@ export default function ProductCard({ product }: { product: Product }) {
               image: product.image,
               quantity: 1,
               stock: product.stock ?? 0,
-            })
-          }
-          disabled={(product.stock ?? 0) <= 0}
+            });
+          }}
+          disabled={hasVariant ? false : (product.stock ?? 0) <= 0}
           className="
-            mt-2
-            flex
-            w-full
-            items-center
-            justify-center
-            gap-1
-            rounded-lg
-            bg-sky-700
-            py-2
-            text-[10px]
-            font-semibold
-            text-white
-            transition
-            hover:bg-sky-800
-            disabled:bg-gray-300
-            sm:mt-3
-            sm:rounded-xl
-            sm:py-2.5
-            sm:text-sm
-          "
+    mt-2
+    flex
+    w-full
+    items-center
+    justify-center
+    gap-1
+    rounded-lg
+    bg-sky-700
+    py-2
+    text-[10px]
+    font-semibold
+    text-white
+    sm:py-2.5
+    sm:text-sm
+  "
         >
           <ShoppingCart size={13} />
 
-          {(product.stock ?? 0) > 0 ? "+ Keranjang" : "Stok Habis"}
+          {hasVariant
+            ? "Pilih Berat"
+            : product.stock > 0
+              ? "+ Keranjang"
+              : "Stok Habis"}
         </button>
       </div>
     </div>

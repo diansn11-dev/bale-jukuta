@@ -12,7 +12,17 @@ export default async function ProdukPage({ searchParams }: Props) {
 
   const { data: products, error } = await supabase
     .from("products")
-    .select("*")
+    .select(
+      `
+    *,
+    product_variants(
+      id,
+      weight,
+      price,
+      stock
+    )
+  `,
+    )
     .order("created_at", { ascending: false });
 
   if (error) {
