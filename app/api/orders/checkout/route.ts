@@ -42,11 +42,22 @@ export async function POST(req: Request) {
     // KURANGI STOK
 
     for (const item of items) {
-      const { data: product } = await supabaseAdmin
+      const { data: product, error } = await supabaseAdmin
         .from("products")
         .select("stock")
         .eq("id", item.id)
         .single();
+
+      if (error || !product) {
+        return NextResponse.json(
+          {
+            message: `Produk ${item.name} tidak ditemukan`,
+          },
+          {
+            status: 400,
+          },
+        );
+      }
 
       await supabaseAdmin
         .from("products")

@@ -19,6 +19,10 @@ export type CartItem = {
   productId?: number;
 
   variantId?: number;
+
+  // tambahan untuk ayam fresh/frozen
+  variantType?: string;
+
   weight?: string;
 
   name: string;

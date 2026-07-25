@@ -34,7 +34,7 @@ export default async function VariantPage({ params }: Props) {
               </p>
             </div>
 
-            <DeleteVariantButton id={variant.id} productId={Number(id)} />
+            <DeleteVariantButton id={variant.id} />
           </div>
         ))}
       </div>

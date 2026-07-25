@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { updateVariant } from "../actions";
+import { updateVariant } from "../action";
 
 export default async function EditVariantPage({
   params,
