@@ -169,14 +169,15 @@ Mohon konfirmasi pesanan ini apabila telah diterima.
       setAlamat("");
       setCatatan("");
 
-      window.open(
-        `https://wa.me/${nomorWhatsAppToko}?text=${encodeURIComponent(
-          pesanWhatsApp,
-        )}`,
-        "_blank",
-      );
+      const whatsappUrl = `https://wa.me/${nomorWhatsAppToko}?text=${encodeURIComponent(
+        pesanWhatsApp,
+      )}`;
 
-      router.push(`/checkout/sukses?id=${result.order.id}`);
+      // simpan id pesanan untuk halaman sukses
+      sessionStorage.setItem("last_order_id", String(result.order.id));
+
+      // langsung buka WhatsApp (lebih stabil di mobile)
+      window.location.href = whatsappUrl;
     } catch (error) {
       console.error(error);
 
