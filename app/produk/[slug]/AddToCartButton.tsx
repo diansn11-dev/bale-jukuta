@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Check, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 type Props = {
@@ -10,6 +9,10 @@ type Props = {
   image: string;
   price: number;
   stock: number;
+
+  // Variant ayam
+  variantId?: number;
+  weight?: string;
 };
 
 export default function AddToCartButton({
@@ -18,56 +21,40 @@ export default function AddToCartButton({
   image,
   price,
   stock,
+  variantId,
+  weight,
 }: Props) {
   const { addToCart } = useCart();
 
-  const [added, setAdded] = useState(false);
-
   function handleAddToCart() {
-    if (stock <= 0) {
-      alert("Stok produk habis");
-      return;
-    }
-
     addToCart({
-      id,
+      // variant punya ID sendiri
+      id: variantId ?? id,
+
+      // produk utama
+      productId: id,
+
+      variantId,
+      weight,
+
       name,
       image,
       price,
-      quantity: 1,
       stock,
+      quantity: 1,
     });
-
-    setAdded(true);
-
-    setTimeout(() => {
-      setAdded(false);
-    }, 1500);
   }
 
   return (
     <button
-      onClick={handleAddToCart}
+      type="button"
       disabled={stock <= 0}
-      className={`mt-8 flex w-full items-center justify-center gap-2 rounded-xl py-4 font-semibold text-white transition-all duration-300 ${
-        stock <= 0
-          ? "cursor-not-allowed bg-gray-400"
-          : added
-            ? "bg-green-600 hover:bg-green-700"
-            : "bg-sky-700 hover:bg-sky-800"
-      }`}
+      onClick={handleAddToCart}
+      className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-sky-700 text-lg font-bold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:bg-gray-300"
     >
-      {added ? (
-        <>
-          <Check size={20} />
-          Ditambahkan
-        </>
-      ) : (
-        <>
-          <ShoppingCart size={20} />
-          Tambah ke Keranjang
-        </>
-      )}
+      <ShoppingCart size={20} />
+
+      {stock > 0 ? "Tambah ke Keranjang" : "Stok Habis"}
     </button>
   );
 }

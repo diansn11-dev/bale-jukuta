@@ -33,8 +33,13 @@ export default async function OrderDetailPage({
     product_name,
     quantity,
     price,
-    subtotal
- )
+    subtotal,
+    variant_id,
+    product_variants(
+      variant_type,
+      weight
+    )
+)
 `,
     )
     .eq("id", orderId)
@@ -178,35 +183,56 @@ mb-5
 space-y-4
 "
         >
-          {order.order_items?.map((item: any) => (
-            <div
-              key={item.id}
-              className="
-rounded-2xl
-bg-gray-50
-p-4
-"
-            >
-              <div
-                className="
-flex
-justify-between
-"
-              >
-                <h3 className="font-bold">{item.product_name}</h3>
+          {order.order_items?.map((item: any) => {
+            const variant = item.product_variants;
 
-                <p>{item.quantity} Kg</p>
-              </div>
+            const isAyam = !!variant;
 
-              <div className="mt-2 text-sm text-gray-500">
-                Harga/Kg: Rp {Number(item.price).toLocaleString("id-ID")}
-              </div>
+            return (
+              <div key={item.id} className="rounded-2xl bg-gray-50 p-5">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-bold text-lg">{item.product_name}</h3>
 
-              <div className="font-semibold mt-2">
-                Subtotal: Rp {Number(item.subtotal).toLocaleString("id-ID")}
+                    {isAyam && (
+                      <div className="mt-2 space-y-1 text-sm text-gray-600">
+                        <div>
+                          Jenis :
+                          <span className="font-semibold">
+                            {" "}
+                            {variant.variant_type}
+                          </span>
+                        </div>
+
+                        <div>
+                          Berat :
+                          <span className="font-semibold">
+                            {" "}
+                            {variant.weight}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="text-right">
+                    <p className="font-semibold">
+                      {item.quantity} {isAyam ? "Ekor" : "Kg"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 text-sm text-gray-500">
+                  Harga {isAyam ? "/Ekor" : "/Kg"} : Rp{" "}
+                  {Number(item.price).toLocaleString("id-ID")}
+                </div>
+
+                <div className="mt-2 font-semibold text-sky-700">
+                  Subtotal : Rp {Number(item.subtotal).toLocaleString("id-ID")}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

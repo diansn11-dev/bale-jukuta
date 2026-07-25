@@ -1,5 +1,6 @@
 "use client";
 
+import { Drumstick } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -17,6 +18,11 @@ const menus = [
     name: "Dashboard",
     href: "/admin",
     icon: LayoutDashboard,
+  },
+  {
+    name: "Varian Ayam",
+    href: "/admin/products/variants",
+    icon: Drumstick,
   },
   {
     name: "Produk",

@@ -11,12 +11,12 @@ export async function uploadProductImage(file: File) {
     throw new Error("File harus berupa JPG, PNG, atau WEBP");
   }
 
-  // Maksimal 5 MB
+  // Maksimal 10 MB
 
-  const maxSize = 5 * 1024 * 1024;
+  const maxSize = 10 * 1024 * 1024;
 
   if (file.size > maxSize) {
-    throw new Error("Ukuran gambar maksimal 5MB");
+    throw new Error("Ukuran gambar maksimal 10MB");
   }
 
   // ==========================
@@ -28,18 +28,33 @@ export async function uploadProductImage(file: File) {
   const fileName = `products/${Date.now()}.${fileExt}`;
 
   // ==========================
+  // CONVERT FILE
+  // ==========================
+
+  const arrayBuffer = await file.arrayBuffer();
+
+  // ==========================
   // UPLOAD STORAGE
   // ==========================
 
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  console.log("UPLOAD FILE:", {
+    name: file.name,
+    type: file.type,
+    size: file.size,
+  });
+
   const { data, error } = await supabaseAdmin.storage
     .from("product-images")
-    .upload(fileName, file, {
+    .upload(fileName, buffer, {
+      contentType: file.type,
       cacheControl: "3600",
       upsert: false,
     });
 
   if (error) {
-    console.error("Upload Image Error:", error);
+    console.log("SUPABASE UPLOAD ERROR:", error);
 
     throw new Error(error.message);
   }

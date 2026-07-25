@@ -3,6 +3,12 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 
 type CartItem = {
   id: number;
+  productId?: number;
+
+  variantId?: number;
+  variantType?: string;
+  weight?: string;
+
   name: string;
   price: number;
   quantity: number;
@@ -18,6 +24,12 @@ export async function POST(request: Request) {
       customer_address,
       note,
       total_price,
+
+      delivery_method,
+
+      payment_method,
+      payment_status,
+
       items,
     } = body;
 
@@ -28,7 +40,8 @@ export async function POST(request: Request) {
     if (
       !customer_name ||
       !customer_phone ||
-      !customer_address ||
+      !payment_method ||
+      !delivery_method ||
       !Array.isArray(items) ||
       items.length === 0
     ) {
@@ -43,15 +56,65 @@ export async function POST(request: Request) {
       );
     }
 
+    if (delivery_method === "Diantar" && !customer_address) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Alamat pengiriman wajib diisi.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
     // ==========================
     // VALIDASI STOK
     // ==========================
 
     for (const item of items as CartItem[]) {
+      // ======================
+      // AYAM (VARIANT)
+      // ======================
+
+      if (item.variantId) {
+        const { data: variant, error } = await supabaseAdmin
+          .from("product_variants")
+          .select("id,weight,stock")
+          .eq("id", item.variantId)
+          .single();
+
+        if (error || !variant) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: `Varian ${item.name} tidak ditemukan.`,
+            },
+            { status: 404 },
+          );
+        }
+
+        if (variant.stock < item.quantity) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: `Stok ${item.name} (${variant.weight}) hanya ${variant.stock} ekor.`,
+            },
+            { status: 400 },
+          );
+        }
+
+        continue;
+      }
+
+      // ======================
+      // IKAN
+      // ======================
+
       const { data: product, error } = await supabaseAdmin
         .from("products")
         .select("id,name,stock")
-        .eq("id", item.id)
+        .eq("id", item.productId ?? item.id)
         .single();
 
       if (error || !product) {
@@ -60,21 +123,17 @@ export async function POST(request: Request) {
             success: false,
             error: `Produk ${item.name} tidak ditemukan.`,
           },
-          {
-            status: 404,
-          },
+          { status: 404 },
         );
       }
 
-      if (Number(product.stock) < item.quantity) {
+      if (product.stock < item.quantity) {
         return NextResponse.json(
           {
             success: false,
-            error: `Stok ${product.name} hanya tersisa ${product.stock} Kg.`,
+            error: `Stok ${item.name} hanya ${product.stock} Kg.`,
           },
-          {
-            status: 400,
-          },
+          { status: 400 },
         );
       }
     }
@@ -88,10 +147,21 @@ export async function POST(request: Request) {
       .insert({
         customer_name,
         customer_phone,
-        customer_address,
+
+        customer_address:
+          delivery_method === "Pickup" ? null : customer_address,
+
         note,
+
         total_price,
+
         status: "pending",
+
+        delivery_method,
+
+        payment_method: payment_method ?? "Transfer Bank",
+
+        payment_status: payment_method === "COD" ? "cod" : "pending",
       })
       .select()
       .single();
@@ -106,10 +176,17 @@ export async function POST(request: Request) {
 
     const orderItems = (items as CartItem[]).map((item) => ({
       order_id: order.id,
-      product_id: item.id,
+
+      product_id: item.productId ?? item.id,
+
+      variant_id: item.variantId ?? null,
+
       product_name: item.name,
+
       quantity: item.quantity,
+
       price: item.price,
+
       subtotal: item.price * item.quantity,
     }));
 
@@ -128,10 +205,35 @@ export async function POST(request: Request) {
     // ==========================
 
     for (const item of items as CartItem[]) {
+      // =========================
+      // AYAM
+      // =========================
+
+      if (item.variantId) {
+        const { data: variant } = await supabaseAdmin
+          .from("product_variants")
+          .select("stock")
+          .eq("id", item.variantId)
+          .single();
+
+        await supabaseAdmin
+          .from("product_variants")
+          .update({
+            stock: Number(variant?.stock ?? 0) - item.quantity,
+          })
+          .eq("id", item.variantId);
+
+        continue;
+      }
+
+      // =========================
+      // IKAN
+      // =========================
+
       const { data: product } = await supabaseAdmin
         .from("products")
         .select("stock")
-        .eq("id", item.id)
+        .eq("id", item.productId ?? item.id)
         .single();
 
       await supabaseAdmin
@@ -139,7 +241,7 @@ export async function POST(request: Request) {
         .update({
           stock: Number(product?.stock ?? 0) - item.quantity,
         })
-        .eq("id", item.id);
+        .eq("id", item.productId ?? item.id);
     }
 
     // ==========================

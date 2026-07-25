@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function OrderStatusSelect({
@@ -11,36 +12,65 @@ export default function OrderStatusSelect({
 }) {
   const router = useRouter();
 
-  async function updateStatus(value: string) {
-    await fetch(`/api/admin/orders/${orderId}/status`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        status: value,
-      }),
-    });
+  const [loading, setLoading] = useState(false);
 
-    router.refresh();
+  async function updateStatus(value: string) {
+    try {
+      setLoading(true);
+
+      const response = await fetch(`/api/admin/orders/${orderId}/status`, {
+        method: "PATCH",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          status: value,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        alert(result.error || "Gagal mengubah status pesanan");
+
+        return;
+      }
+
+      router.refresh();
+    } catch (error) {
+      console.error("UPDATE STATUS ERROR:", error);
+
+      alert("Terjadi kesalahan saat mengubah status");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <select
       defaultValue={status}
+      disabled={loading}
       onChange={(e) => updateStatus(e.target.value)}
       className="
-rounded-xl
-border
-px-4
-py-3
-"
+        rounded-xl
+        border
+        bg-white
+        px-4
+        py-3
+        text-sm
+        font-medium
+        shadow-sm
+        disabled:cursor-not-allowed
+        disabled:bg-gray-100
+      "
     >
       <option value="pending">Pending</option>
 
-      <option value="diproses">Diproses</option>
+      <option value="processed">Diproses</option>
 
-      <option value="dikirim">Dikirim</option>
+      <option value="shipped">Dikirim</option>
 
       <option value="completed">Selesai</option>
 

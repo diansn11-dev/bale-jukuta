@@ -16,6 +16,7 @@ type Product = {
   badge: string | null;
   description: string;
   created_at: string;
+  delivery_type?: string;
 };
 
 type Props = {
@@ -27,31 +28,43 @@ export default function ProdukClient({ products }: Props) {
   const [category, setCategory] = useState("Semua");
   const [sortBy, setSortBy] = useState("default");
 
-  const filteredProducts = useMemo(() => {
-    const data = products.filter((product) => {
-      const cocokNama = product.name
-        .toLowerCase()
-        .includes(search.toLowerCase());
+  const categories = [
+    "Semua",
+    "Ikan Fresh",
+    "Ikan Frozen",
+    "Ayam Fresh",
+    "Ayam Frozen",
+  ];
 
-      const cocokKategori =
+  const filteredProducts = useMemo(() => {
+    let data = products.filter((product) => {
+      const keyword = search.toLowerCase();
+
+      const matchSearch =
+        product.name.toLowerCase().includes(keyword) ||
+        product.category.toLowerCase().includes(keyword);
+
+      const matchCategory =
         category === "Semua" || product.category === category;
 
-      return cocokNama && cocokKategori;
+      return matchSearch && matchCategory;
     });
 
     switch (sortBy) {
       case "murah":
-        return [...data].sort((a, b) => a.price - b.price);
+        data.sort((a, b) => a.price - b.price);
+        break;
 
       case "mahal":
-        return [...data].sort((a, b) => b.price - a.price);
+        data.sort((a, b) => b.price - a.price);
+        break;
 
       case "nama":
-        return [...data].sort((a, b) => a.name.localeCompare(b.name));
-
-      default:
-        return data;
+        data.sort((a, b) => a.name.localeCompare(b.name));
+        break;
     }
+
+    return data;
   }, [products, search, category, sortBy]);
 
   function resetFilter() {
@@ -61,43 +74,26 @@ export default function ProdukClient({ products }: Props) {
   }
 
   return (
-    <main
-      className="
-    mx-auto
-    max-w-7xl
-    px-4
-    py-8
-    sm:px-6
-    sm:py-12
-  "
-    >
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
+      {/* Header */}
+
       <div className="mb-10 text-center">
-        <h1
-          className="
-    text-2xl
-    font-bold
-    text-sky-700
-    sm:text-4xl
-  "
-        >
+        <h1 className="text-3xl font-bold text-sky-700 sm:text-5xl">
           Produk Bale Juku' Ta'
         </h1>
 
         <p className="mt-3 text-gray-500">
-          Temukan ikan fresh dan frozen terbaik.
+          Temukan ikan segar, ikan frozen, ayam fresh, dan ayam frozen
+          berkualitas.
         </p>
       </div>
 
-      <div
-        className="
-    rounded-2xl
-    bg-white
-    p-4
-    shadow-lg
-    sm:p-6
-  "
-      >
+      {/* Filter */}
+
+      <div className="rounded-2xl bg-white p-4 shadow-lg sm:p-6">
         <div className="grid gap-4 lg:grid-cols-4">
+          {/* Search */}
+
           <div className="relative">
             <Search
               size={20}
@@ -113,17 +109,21 @@ export default function ProdukClient({ products }: Props) {
             />
           </div>
 
+          {/* Kategori */}
+
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="rounded-xl border p-3"
           >
-            <option value="Semua">Semua</option>
-
-            <option value="Fresh">Fresh</option>
-
-            <option value="Frozen">Frozen</option>
+            {categories.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
           </select>
+
+          {/* Sorting */}
 
           <select
             value={sortBy}
@@ -131,13 +131,12 @@ export default function ProdukClient({ products }: Props) {
             className="rounded-xl border p-3"
           >
             <option value="default">Urutkan</option>
-
             <option value="murah">Harga Termurah</option>
-
             <option value="mahal">Harga Termahal</option>
-
             <option value="nama">Nama A-Z</option>
           </select>
+
+          {/* Reset */}
 
           <button
             onClick={resetFilter}
@@ -149,13 +148,17 @@ export default function ProdukClient({ products }: Props) {
         </div>
       </div>
 
-      <div className="mt-8 mb-6 flex items-center gap-2 text-gray-600">
+      {/* Jumlah Produk */}
+
+      <div className="mb-6 mt-8 flex items-center gap-2 text-gray-600">
         <Package size={20} />
 
         <span>
           <strong>{filteredProducts.length}</strong> Produk ditemukan
         </span>
       </div>
+
+      {/* Produk */}
 
       {filteredProducts.length === 0 ? (
         <div className="rounded-2xl bg-gray-100 py-20 text-center">
@@ -166,17 +169,23 @@ export default function ProdukClient({ products }: Props) {
           <p className="mt-2 text-gray-500">Coba gunakan kata kunci lain.</p>
         </div>
       ) : (
-        <div
-          className="
-    grid
-    grid-cols-2
-    gap-3
-    sm:gap-5
-    xl:grid-cols-4
-  "
-        >
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={{
+                id: product.id,
+                slug: product.slug,
+                name: product.name,
+                image: product.image,
+                price: product.price,
+                stock: product.stock,
+                category: product.category,
+                delivery_type: product.delivery_type,
+                badge: product.badge,
+                rating: product.rating,
+              }}
+            />
           ))}
         </div>
       )}

@@ -1,17 +1,31 @@
-import { supabase } from "@/lib/supabase";
 import ProdukClient from "./ProdukClient";
+import { supabase } from "@/lib/supabase";
 
-export default async function ProdukPage() {
+type Props = {
+  searchParams: Promise<{
+    kategori?: string;
+  }>;
+};
+
+export default async function ProdukPage({ searchParams }: Props) {
+  const { kategori } = await searchParams;
+
   const { data: products, error } = await supabase
     .from("products")
     .select("*")
-    .order("created_at", {
-      ascending: false,
-    });
+    .order("created_at", { ascending: false });
 
   if (error) {
-    return <div className="p-10 text-center">Gagal mengambil data produk</div>;
+    console.error(error);
   }
 
-  return <ProdukClient products={products ?? []} />;
+  let filteredProducts = products ?? [];
+
+  if (kategori) {
+    filteredProducts = filteredProducts.filter((item) =>
+      item.category.includes(kategori),
+    );
+  }
+
+  return <ProdukClient products={filteredProducts} />;
 }

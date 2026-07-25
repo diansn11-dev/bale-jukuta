@@ -36,8 +36,8 @@ function validateImage(file: File | null) {
     throw new Error("Format gambar harus JPG, PNG, atau WEBP.");
   }
 
-  if (file.size > 2 * 1024 * 1024) {
-    throw new Error("Ukuran gambar maksimal 2 MB.");
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error("Ukuran gambar maksimal 10 MB.");
   }
 }
 
@@ -62,6 +62,8 @@ async function refreshPages() {
   revalidatePath("/produk");
   revalidatePath("/admin/products");
   revalidatePath("/admin/products/[id]/edit", "page");
+  revalidatePath("/admin/products/[id]/variants", "page");
+  revalidatePath("/admin/products/variants");
 }
 
 // ========================================
@@ -71,13 +73,15 @@ async function refreshPages() {
 export async function createProduct(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
 
-  const slug = generateSlug(name);
-
-  const price = validateNumber(String(formData.get("price")), "Harga");
-
-  const stock = validateNumber(String(formData.get("stock")), "Stok");
-
   const category = String(formData.get("category") ?? "");
+
+  const slug = generateSlug(`${name}-${category}`);
+
+  const isChicken = category === "Ayam Fresh" || category === "Ayam Frozen";
+
+  const ayamType = category === "Ayam Frozen" ? "Frozen" : "Fresh";
+
+  const delivery_type = String(formData.get("delivery_type") ?? "ready");
 
   const rating = Number(formData.get("rating") ?? 5);
 
@@ -87,19 +91,27 @@ export async function createProduct(formData: FormData) {
 
   const imageFile = formData.get("image") as File | null;
 
+  const stock = validateNumber(String(formData.get("stock") ?? 0), "Stok");
+
+  // ==============================
+  // HARGA PRODUK
+  // ==============================
+
+  let price = 0;
+
+  if (!isChicken) {
+    price = validateNumber(String(formData.get("price") ?? 0), "Harga");
+  }
+
   if (!name) {
     throw new Error("Nama produk wajib diisi.");
   }
 
-  if (price <= 0) {
-    throw new Error("Harga harus lebih dari 0.");
-  }
-
-  if (stock < 0) {
-    throw new Error("Stok tidak boleh negatif.");
-  }
-
   validateImage(imageFile);
+
+  // ==============================
+  // CEK DUPLIKAT
+  // ==============================
 
   const { data: exist } = await supabaseAdmin
     .from("products")
@@ -111,26 +123,90 @@ export async function createProduct(formData: FormData) {
     throw new Error("Produk dengan nama tersebut sudah ada.");
   }
 
+  // ==============================
+  // UPLOAD IMAGE
+  // ==============================
+
   let image = "";
 
   if (imageFile && imageFile.size > 0) {
     image = await uploadProductImage(imageFile);
   }
 
-  const { error } = await supabaseAdmin.from("products").insert({
-    name,
-    slug,
-    price,
-    stock,
-    category,
-    rating,
-    badge,
-    description,
-    image,
-  });
+  // ==============================
+  // INSERT PRODUCT
+  // ==============================
+
+  const { data: product, error } = await supabaseAdmin
+    .from("products")
+    .insert({
+      name,
+      slug,
+      category,
+
+      price,
+
+      stock,
+
+      rating,
+
+      badge,
+
+      description,
+
+      image,
+
+      delivery_type,
+    })
+    .select()
+    .single();
 
   if (error) {
-    throw error;
+    console.error("CREATE PRODUCT ERROR:", error);
+
+    throw new Error(error.message);
+  }
+
+  // =====================================
+  // AUTO CREATE VARIANT AYAM
+  // =====================================
+
+  if (isChicken) {
+    const ayamVariants = [
+      {
+        product_id: product.id,
+        variant_type: ayamType,
+        weight: "0.9 - 1 kg",
+        price: Number(formData.get("price_09")),
+        stock,
+      },
+
+      {
+        product_id: product.id,
+        variant_type: ayamType,
+        weight: "1 - 1.1 kg",
+        price: Number(formData.get("price_11")),
+        stock,
+      },
+
+      {
+        product_id: product.id,
+        variant_type: ayamType,
+        weight: "1.4 - 1.5 kg",
+        price: Number(formData.get("price_14")),
+        stock,
+      },
+    ];
+
+    const { error: variantError } = await supabaseAdmin
+      .from("product_variants")
+      .insert(ayamVariants);
+
+    if (variantError) {
+      console.error("CREATE VARIANT ERROR:", variantError);
+
+      throw new Error(variantError.message);
+    }
   }
 
   await refreshPages();
@@ -143,17 +219,31 @@ export async function createProduct(formData: FormData) {
 // ========================================
 
 export async function updateProduct(id: number, formData: FormData) {
+  const category = String(formData.get("category") ?? "");
+
+  const isChicken = category === "Ayam Fresh" || category === "Ayam Frozen";
+
+  const isFish = category === "Ikan Fresh" || category === "Ikan Frozen";
+
   const name = String(formData.get("name") ?? "").trim();
 
   const slugInput = String(formData.get("slug") ?? "").trim();
 
-  const slug = slugInput ? generateSlug(slugInput) : generateSlug(name);
+  const slug = slugInput
+    ? generateSlug(slugInput)
+    : generateSlug(`${name}-${category}`);
 
-  const price = validateNumber(String(formData.get("price")), "Harga");
+  const delivery_type = String(formData.get("delivery_type") ?? "ready");
 
-  const stock = validateNumber(String(formData.get("stock")), "Stok");
+  const pricing_type = String(formData.get("pricing_type") ?? "per_kg");
 
-  const category = String(formData.get("category") ?? "");
+  let price = 0;
+
+  if (!isChicken) {
+    price = validateNumber(String(formData.get("price") ?? 0), "Harga");
+  }
+
+  const stock = validateNumber(String(formData.get("stock") ?? "0"), "Stok");
 
   const rating = Number(formData.get("rating") ?? 5);
 
@@ -182,21 +272,31 @@ export async function updateProduct(id: number, formData: FormData) {
     throw new Error("Slug sudah digunakan.");
   }
 
-  const updateData: Record<string, unknown> = {
+  const updateData: any = {
     name,
     slug,
-    price,
-    stock,
     category,
+
+    pricing_type,
+    delivery_type,
+
     rating,
     badge,
+
     description,
   };
+
+  if (!isChicken) {
+    updateData.price = price;
+    updateData.stock = stock;
+  }
 
   if (imageFile && imageFile.size > 0) {
     const image = await uploadProductImage(imageFile);
 
-    updateData.image = image;
+    Object.assign(updateData, {
+      image,
+    });
 
     await deleteImage(current?.image);
   }
@@ -207,7 +307,39 @@ export async function updateProduct(id: number, formData: FormData) {
     .eq("id", id);
 
   if (error) {
-    throw error;
+    console.error("UPDATE PRODUCT ERROR:", error);
+
+    throw new Error(error.message);
+  }
+
+  // =================================
+  // UPDATE AYAM VARIANT
+  // =================================
+
+  if (isChicken) {
+    const variantCount = Number(formData.get("variant_count") ?? 0);
+
+    for (let i = 0; i < variantCount; i++) {
+      const variantId = Number(formData.get(`variant_id_${i}`));
+
+      const { error: variantError } = await supabaseAdmin
+        .from("product_variants")
+        .update({
+          variant_type: category === "Ayam Frozen" ? "Frozen" : "Fresh",
+
+          weight: String(formData.get(`weight_${i}`)),
+
+          price: Number(formData.get(`price_${i}`)),
+
+          stock: Number(formData.get(`stock_${i}`)),
+        })
+        .eq("id", variantId);
+
+      if (variantError) {
+        console.error("UPDATE VARIANT ERROR:", variantError);
+        throw new Error(variantError.message);
+      }
+    }
   }
 
   await refreshPages();
@@ -237,4 +369,38 @@ export async function deleteProduct(id: number) {
   await refreshPages();
 
   redirect("/admin/products");
+}
+
+// ========================================
+// UPDATE AYAM VARIANT
+// ========================================
+
+export async function updateChickenVariant(id: number, formData: FormData) {
+  const price = Number(formData.get("price"));
+  const stock = Number(formData.get("stock"));
+
+  if (Number.isNaN(price)) {
+    throw new Error("Harga tidak valid");
+  }
+
+  if (Number.isNaN(stock)) {
+    throw new Error("Stok tidak valid");
+  }
+
+  const { error } = await supabaseAdmin
+    .from("product_variants")
+    .update({
+      price,
+      stock,
+    })
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/produk");
+  revalidatePath("/");
+  revalidatePath("/admin/products/variants");
 }

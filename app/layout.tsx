@@ -9,6 +9,8 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 
+import { Toaster } from "sonner";
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -50,6 +52,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
+
     title: "Bale Juku' Ta' | Ikan Fresh & Frozen Berkualitas",
 
     description:
@@ -70,9 +73,20 @@ export default function RootLayout({
         <CartProvider>
           <WishlistProvider>
             <Navbar />
+
             <main>{children}</main>
+
             <Footer />
+
             <FloatingWhatsApp />
+
+            {/* Global Notification */}
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+              duration={2500}
+            />
           </WishlistProvider>
         </CartProvider>
       </body>

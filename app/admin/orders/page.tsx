@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import PaymentStatusSelect from "@/components/PaymentStatusSelect";
 
 function getStatus(status: string) {
   switch (status) {
@@ -19,11 +20,19 @@ function getStatus(status: string) {
         icon: Clock3,
       };
 
+    case "processed":
     case "diproses":
       return {
         text: "Diproses",
         color: "bg-blue-100 text-blue-700",
         icon: PackageCheck,
+      };
+
+    case "shipped":
+      return {
+        text: "Dikirim",
+        color: "bg-purple-100 text-purple-700",
+        icon: ShoppingBag,
       };
 
     case "completed":
@@ -140,6 +149,33 @@ text-gray-800
                   <p className="mt-2 font-semibold">
                     Rp {Number(order.total_price).toLocaleString("id-ID")}
                   </p>
+
+                  {/* PEMBAYARAN */}
+
+                  <div className="mt-3 space-y-1 text-sm">
+                    <p>
+                      {order.payment_method === "QRIS"
+                        ? "📱"
+                        : order.payment_method === "COD"
+                          ? "💵"
+                          : "🏦"}{" "}
+                      Pembayaran:
+                      <span className="ml-1 font-semibold text-gray-700">
+                        {order.payment_method ?? "-"}
+                      </span>
+                    </p>
+
+                    <div className="mt-3">
+                      <p className="mb-2 text-sm font-semibold">
+                        Status Pembayaran
+                      </p>
+
+                      <PaymentStatusSelect
+                        orderId={order.id}
+                        status={order.payment_status ?? "pending"}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* STATUS */}

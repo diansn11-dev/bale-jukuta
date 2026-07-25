@@ -1,81 +1,257 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight, MessageCircle, Check } from "lucide-react";
 
 export default function CTASection() {
   return (
-    <section className="relative overflow-hidden py-24">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-sky-700 via-sky-600 to-cyan-500" />
+    <section className="relative overflow-hidden py-16">
+      <div
+        className="
+        mx-auto
+        max-w-7xl
+        overflow-hidden
+        rounded-[40px]
+        bg-gradient-to-r
+        from-[#032b63]
+        via-[#0757a5]
+        to-[#12a6d8]
+        px-6
+        py-10
+        shadow-2xl
+        md:px-12
+        lg:py-14
+      "
+      >
+        <div
+          className="
+          grid
+          items-center
+          gap-10
+          lg:grid-cols-2
+        "
+        >
+          {/* TEXT */}
 
-      {/* Blur Effect */}
-      <div className="absolute -left-32 top-10 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
-      <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-cyan-300/20 blur-3xl" />
-
-      <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-2">
-        {/* Text */}
-        <div className="text-white">
-          <span className="rounded-full bg-white/20 px-5 py-2 text-sm font-semibold backdrop-blur">
-            Bale Juku' Ta'
-          </span>
-
-          <h2 className="mt-6 text-5xl font-extrabold leading-tight">
-            Siap Menikmati
-            <br />
-            Ikan Segar
-            <br />
-            Berkualitas?
-          </h2>
-
-          <p className="mt-6 max-w-xl text-lg leading-8 text-sky-100">
-            Kami menyediakan berbagai pilihan ikan fresh dan frozen dengan
-            kualitas terbaik langsung dari nelayan terpercaya. Pesan sekarang,
-            nikmati kemudahan belanja, dan rasakan kesegarannya di rumah Anda.
-          </p>
-
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link
-              href="/produk"
-              className="rounded-xl bg-white px-8 py-4 font-bold text-sky-700 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          <div className="text-white">
+            <div
+              className="
+              inline-flex
+              items-center
+              gap-2
+              rounded-full
+              bg-white/20
+              px-5
+              py-2
+              text-sm
+              font-semibold
+              backdrop-blur
+            "
             >
-              Belanja Sekarang
-            </Link>
+              🐟 Ikan Fresh
+              <span>•</span>
+              🍗 Ayam Pilihan
+            </div>
 
-            <Link
-              href="https://wa.me/6285111202275"
-              target="_blank"
-              className="flex items-center gap-2 rounded-xl border-2 border-white px-8 py-4 font-bold text-white transition duration-300 hover:bg-white hover:text-sky-700"
+            <h2
+              className="
+              mt-6
+              text-4xl
+              font-black
+              leading-tight
+              md:text-5xl
+            "
             >
-              <MessageCircle size={20} />
-              WhatsApp
-            </Link>
+              Segar Dari Laut
+              <br />
+              Berkualitas Untuk
+              <br />
+              Keluarga Anda
+            </h2>
+
+            <p
+              className="
+              mt-5
+              max-w-lg
+              text-sky-100
+              md:text-lg
+            "
+            >
+              Nikmati ikan fresh, frozen, ayam fresh dan ayam frozen dengan
+              kualitas terbaik. Pesan mudah, kami siap antar.
+            </p>
+
+            <div
+              className="
+              mt-6
+              space-y-3
+              text-sm
+            "
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className="
+                  rounded-full
+                  bg-white/20
+                  p-1
+                "
+                >
+                  <Check size={16} />
+                </span>
+                Produk pilihan berkualitas
+              </div>
+
+              <div className="flex items-center gap-3">
+                <span
+                  className="
+                  rounded-full
+                  bg-white/20
+                  p-1
+                "
+                >
+                  <Check size={16} />
+                </span>
+                Fresh & Frozen tersedia
+              </div>
+
+              <div className="flex items-center gap-3">
+                <span
+                  className="
+                  rounded-full
+                  bg-white/20
+                  p-1
+                "
+                >
+                  <Check size={16} />
+                </span>
+                Pengiriman cepat
+              </div>
+            </div>
+
+            <div
+              className="
+              mt-8
+              flex
+              flex-wrap
+              gap-4
+            "
+            >
+              <Link
+                href="/produk"
+                className="
+                  flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  bg-white
+                  px-8
+                  py-4
+                  font-bold
+                  text-sky-700
+                  shadow-xl
+                  transition
+                  hover:scale-105
+                "
+              >
+                Mulai Belanja
+                <ArrowRight size={18} />
+              </Link>
+
+              <Link
+                href="https://wa.me/6285111202275"
+                target="_blank"
+                className="
+                  flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  border
+                  border-white/50
+                  px-8
+                  py-4
+                  font-bold
+                  text-white
+                  transition
+                  hover:bg-white/20
+                "
+              >
+                <MessageCircle size={20} />
+                Chat Admin
+              </Link>
+            </div>
           </div>
-        </div>
 
-        {/* Image */}
-        <div className="relative flex justify-center">
-          <div className="absolute h-[430px] w-[430px] rounded-full bg-white/10 blur-3xl" />
+          {/* IMAGE */}
 
-          <Image
-            src="/hero-fish.png"
-            alt="Fresh Fish"
-            width={700}
-            height={650}
-            priority
-            className="relative z-10 w-full max-w-[600px] drop-shadow-[0_35px_45px_rgba(0,0,0,.35)]"
-          />
+          <div
+            className="
+            relative
+            flex
+            justify-center
+          "
+          >
+            <div
+              className="
+              absolute
+              h-72
+              w-72
+              rounded-full
+              bg-white/20
+              blur-3xl
+            "
+            />
 
-          {/* Floating Card */}
-          <div className="absolute bottom-12 left-0 rounded-2xl bg-white p-5 shadow-2xl">
-            <p className="text-sm text-slate-500">Kualitas Terjamin</p>
+            <div
+              className="
+              relative
+              rounded-[35px]
+              border
+              border-white/20
+              bg-white/10
+              p-3
+              backdrop-blur
+            "
+            >
+              <Image
+                src="/images/cta-produk.jpg"
+                alt="Produk Bale Juku Ta"
+                width={450}
+                height={450}
+                className="
+                  h-[360px]
+                  w-[360px]
+                  rounded-[30px]
+                  object-cover
+                  md:h-[430px]
+                  md:w-[430px]
+                "
+              />
+            </div>
 
-            <h3 className="mt-1 text-2xl font-bold text-slate-800">
-              100% Fresh
-            </h3>
+            {/* CARD */}
 
-            <div className="mt-3 flex items-center gap-2 text-sky-700">
-              <ArrowRight size={18} />
-              <span className="font-semibold">Langsung dari Nelayan</span>
+            <div
+              className="
+              absolute
+              bottom-5
+              left-2
+              rounded-2xl
+              bg-white
+              px-6
+              py-4
+              shadow-2xl
+            "
+            >
+              <p className="text-xs text-gray-500">Tersedia</p>
+
+              <p
+                className="
+                text-xl
+                font-black
+                text-gray-800
+              "
+              >
+                Fresh & Frozen
+              </p>
             </div>
           </div>
         </div>

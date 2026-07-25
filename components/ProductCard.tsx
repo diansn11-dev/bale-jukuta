@@ -7,18 +7,27 @@ import { useCart } from "@/context/CartContext";
 
 type Product = {
   id: number;
-  name: string;
   slug: string;
+  name: string;
   image: string;
   price: number;
-  stock?: number;
-  rating?: number;
+  stock: number;
+  category: string;
+  delivery_type?: string;
   badge?: string | null;
-  category?: string;
+  rating: number;
 };
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
+
+  const isChicken = product.category.includes("Ayam");
+  const isFish = product.category.includes("Ikan");
+
+  const isFresh = product.category.includes("Fresh");
+  const isFrozen = product.category.includes("Frozen");
+
+  const isPreOrder = product.delivery_type === "preorder";
 
   return (
     <div
@@ -58,7 +67,33 @@ export default function ProductCard({ product }: { product: Product }) {
             "
           />
 
-          {product.badge && <span>{product.badge}</span>}
+          <div className="absolute left-2 top-2 flex flex-col gap-2">
+            {isFresh && (
+              <span className="rounded-full bg-emerald-600 px-2 py-1 text-[10px] font-bold text-white shadow">
+                FRESH
+              </span>
+            )}
+
+            {isFrozen && (
+              <span className="rounded-full bg-sky-600 px-2 py-1 text-[10px] font-bold text-white shadow">
+                FROZEN
+              </span>
+            )}
+
+            {product.stock <= 0 ? (
+              <span className="rounded-full bg-red-600 px-2 py-1 text-[10px] font-bold text-white shadow">
+                STOK HABIS
+              </span>
+            ) : isPreOrder ? (
+              <span className="rounded-full bg-orange-500 px-2 py-1 text-[10px] font-bold text-white shadow">
+                PRE ORDER H+1
+              </span>
+            ) : (
+              <span className="rounded-full bg-green-600 px-2 py-1 text-[10px] font-bold text-white shadow">
+                READY STOCK
+              </span>
+            )}
+          </div>
         </div>
       </Link>
 
@@ -145,6 +180,49 @@ export default function ProductCard({ product }: { product: Product }) {
           >
             /Kg
           </p>
+
+          <div className="mt-3 rounded-lg bg-gray-50 p-2 text-[11px] text-gray-600">
+            {isChicken && isFresh && (
+              <>
+                <p>🍗 Dipotong & Dibersihkan</p>
+                <p>🚚 Pengiriman H+1</p>
+              </>
+            )}
+
+            <p className="mt-2 text-xs font-medium text-gray-500">
+              Stok :
+              <span className="font-bold text-sky-700">
+                {" "}
+                {product.stock} Kg
+              </span>
+            </p>
+
+            {isChicken && isFrozen && (
+              <>
+                {product.stock > 0 && (
+                  <>
+                    <p>❄️ Ready Stock</p>
+                    <p>🧊 Langsung Dikirim</p>
+                  </>
+                )}
+              </>
+            )}
+
+            {isFish && isFresh && (
+              <>
+                <p>🐟 Hasil Tangkapan Segar</p>
+                <p>🚚 Siap Dikirim</p>
+              </>
+            )}
+
+            {isFish && isFrozen && (
+              <>
+                <p>🧊 Dibekukan Berkualitas</p>
+
+                {product.stock > 0 && <p>🚚 Ready Stock</p>}
+              </>
+            )}
+          </div>
         </div>
 
         {/* BUTTON */}
@@ -185,7 +263,7 @@ export default function ProductCard({ product }: { product: Product }) {
         >
           <ShoppingCart size={13} />
 
-          {(product.stock ?? 0) > 0 ? "Tambah" : "Habis"}
+          {(product.stock ?? 0) > 0 ? "+ Keranjang" : "Stok Habis"}
         </button>
       </div>
     </div>

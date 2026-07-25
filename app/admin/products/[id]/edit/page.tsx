@@ -16,7 +16,18 @@ export default async function EditProductPage({
 
   const { data: product, error } = await supabaseAdmin
     .from("products")
-    .select("*")
+    .select(
+      `
+    *,
+    product_variants(
+  id,
+  variant_type,
+  weight,
+  price,
+  stock
+)
+  `,
+    )
     .eq("id", productId)
     .single();
 
@@ -29,6 +40,9 @@ export default async function EditProductPage({
       <div className="rounded-xl bg-white p-6">Produk tidak ditemukan</div>
     );
   }
+
+  const isChicken =
+    product.category === "Ayam Fresh" || product.category === "Ayam Frozen";
 
   return (
     <div className="space-y-6">
@@ -89,6 +103,11 @@ export default async function EditProductPage({
           action={updateProduct.bind(null, product.id)}
           className="space-y-5"
         >
+          <input
+            type="hidden"
+            name="variants"
+            value={JSON.stringify(product.product_variants ?? [])}
+          />
           {/* NAMA */}
 
           <div>
@@ -100,7 +119,7 @@ export default async function EditProductPage({
               font-medium
             "
             >
-              Nama Ikan
+              Nama Produk
             </label>
 
             <input
@@ -120,70 +139,114 @@ export default async function EditProductPage({
 
           {/* HARGA & STOK */}
 
-          <div
-            className="
-            grid
-            grid-cols-1
-            gap-5
-            md:grid-cols-2
-          "
-          >
-            <div>
-              <label
-                className="
-                mb-2
-                block
-                text-sm
-                font-medium
-              "
-              >
-                Harga / Kg
-              </label>
+          {!isChicken ? (
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-medium">
+                  Harga / Kg
+                </label>
 
-              <input
-                type="number"
-                name="price"
-                min="0"
-                required
-                defaultValue={product.price}
-                className="
-                  w-full
-                  rounded-xl
-                  border
-                  px-4
-                  py-3
-                "
-              />
+                <input
+                  type="number"
+                  name="price"
+                  min="0"
+                  required
+                  defaultValue={product.price ?? 0}
+                  className="w-full rounded-xl border px-4 py-3"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium">
+                  Stok / Kg
+                </label>
+
+                <input
+                  type="number"
+                  name="stock"
+                  min="0"
+                  required
+                  defaultValue={product.stock}
+                  className="w-full rounded-xl border px-4 py-3"
+                />
+              </div>
             </div>
+          ) : (
+            <div className="rounded-2xl border border-orange-200 bg-orange-50 p-5">
+              <h3 className="mb-5 text-lg font-bold text-orange-700">
+                🐔 Varian Ayam
+              </h3>
 
-            <div>
-              <label
-                className="
-                mb-2
-                block
-                text-sm
-                font-medium
-              "
-              >
-                Stok / Kg
-              </label>
+              <div className="space-y-5">
+                {product.product_variants?.map(
+                  (variant: any, index: number) => (
+                    <div
+                      key={variant.id}
+                      className="rounded-xl border bg-white p-5"
+                    >
+                      <input
+                        type="hidden"
+                        name={`variant_id_${index}`}
+                        defaultValue={variant.id}
+                      />
 
-              <input
-                type="number"
-                name="stock"
-                min="0"
-                required
-                defaultValue={product.stock}
-                className="
-                  w-full
-                  rounded-xl
-                  border
-                  px-4
-                  py-3
-                "
-              />
+                      <div className="grid gap-4 md:grid-cols-4">
+                        <div>
+                          <label className="mb-2 block text-sm">Jenis</label>
+
+                          <input
+                            name={`variant_type_${index}`}
+                            defaultValue={variant.variant_type}
+                            readOnly
+                            className="w-full rounded-xl border bg-gray-100 px-4 py-3"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="mb-2 block text-sm">Berat</label>
+
+                          <input
+                            name={`weight_${index}`}
+                            defaultValue={variant.weight}
+                            readOnly
+                            className="w-full rounded-xl border bg-gray-100 px-4 py-3"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="mb-2 block text-sm">Harga</label>
+
+                          <input
+                            type="number"
+                            name={`price_${index}`}
+                            defaultValue={variant.price}
+                            className="w-full rounded-xl border px-4 py-3"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="mb-2 block text-sm">Stok</label>
+
+                          <input
+                            type="number"
+                            name={`stock_${index}`}
+                            defaultValue={variant.stock}
+                            className="w-full rounded-xl border px-4 py-3"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ),
+                )}
+
+                <input
+                  type="hidden"
+                  name="variant_count"
+                  value={product.product_variants?.length ?? 0}
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           {/* CATEGORY */}
 
@@ -210,9 +273,10 @@ export default async function EditProductPage({
                 py-3
               "
             >
-              <option value="Fresh">Fresh</option>
-
-              <option value="Frozen">Frozen</option>
+              <option value="Ikan Fresh">Ikan Fresh</option>
+              <option value="Ikan Frozen">Ikan Frozen</option>
+              <option value="Ayam Fresh">Ayam Fresh</option>
+              <option value="Ayam Frozen">Ayam Frozen</option>
             </select>
           </div>
 
@@ -279,7 +343,7 @@ export default async function EditProductPage({
                 px-4
                 py-3
               "
-              placeholder="Deskripsi ikan..."
+              placeholder="Deskripsi produk..."
             />
           </div>
 

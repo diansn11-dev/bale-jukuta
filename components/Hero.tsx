@@ -1,55 +1,91 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Fish, Drumstick, ShoppingBag, Truck, ShieldCheck } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-blue-950 via-blue-800 to-sky-500">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 min-h-[520px] lg:min-h-[580px] flex items-center">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center w-full">
-          {/* Kiri */}
-          <div>
-            <span className="inline-flex items-center rounded-full bg-white/15 px-4 py-2 text-xs font-semibold">
-              🐟 FRESH & FROZEN
-            </span>
+    <section className="relative overflow-hidden bg-gradient-to-r from-sky-900 via-sky-700 to-sky-500 text-white">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-2">
+        {/* LEFT */}
 
-            <h1 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1]">
-              Ikan Fresh &
-              <br />
-              Frozen
-              <br />
-              Berkualitas
-            </h1>
+        <div>
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
+            🐟 Fresh Seafood & 🍗 Fresh Chicken
+          </span>
 
-            <p className="mt-5 max-w-lg text-base lg:text-lg text-blue-100">
-              Menyediakan berbagai jenis ikan laut segar dan frozen dengan
-              kualitas terbaik langsung dari nelayan pilihan.
-            </p>
+          <h1 className="mt-6 text-4xl font-extrabold leading-tight lg:text-6xl">
+            Bale Juku' Ta'
+          </h1>
 
-            <div className="mt-8 flex gap-4">
-              <Link
-                href="/produk"
-                className="rounded-xl bg-white px-6 py-3 font-semibold text-sky-700 hover:scale-105 transition"
-              >
-                Lihat Produk
-              </Link>
+          <p className="mt-4 text-xl text-sky-100">
+            Ikan Segar, Ikan Frozen, Ayam Fresh dan Ayam Frozen langsung dari
+            supplier terpercaya.
+          </p>
 
-              <a
-                href="https://wa.me/6285111202275"
-                className="rounded-xl border border-white px-6 py-3 font-semibold hover:bg-white hover:text-sky-700 transition"
-              >
-                Hubungi Kami
-              </a>
-            </div>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              href="/produk"
+              className="rounded-2xl bg-white px-6 py-4 font-bold text-sky-700 transition hover:scale-105"
+            >
+              Lihat Produk
+            </Link>
+
+            <a
+              href="https://wa.me/6285111202275"
+              target="_blank"
+              className="rounded-2xl border border-white px-6 py-4 font-bold transition hover:bg-white hover:text-sky-700"
+            >
+              Hubungi Kami
+            </a>
           </div>
 
-          {/* Kanan */}
-          <div className="relative h-[320px] md:h-[380px] lg:h-[430px]">
+          {/* FITUR */}
+
+          <div className="mt-10 grid grid-cols-2 gap-5">
+            <div className="flex items-center gap-3 rounded-2xl bg-white/10 p-4">
+              <Fish size={28} />
+              <div>
+                <p className="font-bold">Ikan Fresh</p>
+                <p className="text-sm text-sky-100">Siap Masak</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-2xl bg-white/10 p-4">
+              <Drumstick size={28} />
+              <div>
+                <p className="font-bold">Ayam Fresh</p>
+                <p className="text-sm text-sky-100">Dibersihkan H+1</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-2xl bg-white/10 p-4">
+              <Truck size={28} />
+              <div>
+                <p className="font-bold">Pengiriman</p>
+                <p className="text-sm text-sky-100">Cepat & Aman</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-2xl bg-white/10 p-4">
+              <ShieldCheck size={28} />
+              <div>
+                <p className="font-bold">Kualitas</p>
+                <p className="text-sm text-sky-100">Terjamin</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT */}
+
+        <div className="relative">
+          <div className="relative mx-auto h-[520px] w-full max-w-lg">
             <Image
-              src="/hero-fish.png"
-              alt="Ikan Segar"
+              src="/hero-2.png"
+              alt="Bale Juku Ta"
               fill
               priority
-              className="object-contain object-center"
+              className="object-contain"
             />
           </div>
         </div>
