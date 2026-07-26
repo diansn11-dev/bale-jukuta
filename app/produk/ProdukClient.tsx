@@ -17,10 +17,13 @@ type Product = {
   description: string;
   created_at: string;
   delivery_type?: string;
-};
 
-type Props = {
-  products: Product[];
+  product_variants?: {
+    id: number;
+    weight: string;
+    price: number;
+    stock: number;
+  }[];
 };
 
 export default function ProdukClient({ products }: Props) {
@@ -184,6 +187,8 @@ export default function ProdukClient({ products }: Props) {
                 delivery_type: product.delivery_type,
                 badge: product.badge,
                 rating: product.rating,
+
+                product_variants: product.product_variants,
               }}
             />
           ))}

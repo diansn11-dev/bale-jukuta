@@ -37,7 +37,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const isPreOrder = product.delivery_type === "preorder";
 
   const hasVariant =
-    product.product_variants && product.product_variants.length > 0;
+    product.category === "Ayam Fresh" || product.category === "Ayam Frozen";
 
   const variantStock =
     product.product_variants?.reduce(
@@ -46,6 +46,11 @@ export default function ProductCard({ product }: { product: Product }) {
     ) ?? 0;
 
   const displayStock = hasVariant ? variantStock : product.stock;
+
+  const lowestVariantPrice =
+    product.product_variants && product.product_variants.length > 0
+      ? Math.min(...product.product_variants.map((v) => v.price))
+      : product.price;
 
   return (
     <div
@@ -98,7 +103,7 @@ export default function ProductCard({ product }: { product: Product }) {
               </span>
             )}
 
-            {(hasVariant ? variantStock : product.stock) <= 0 ? (
+            {displayStock <= 0 ? (
               <span className="rounded-full bg-red-600 px-2 py-1 text-[10px] font-bold text-white shadow">
                 STOK HABIS
               </span>
@@ -178,65 +183,109 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* PRICE */}
 
         <div className="mt-1">
-          <p
-            className="
-              text-sm
-              font-bold
-              text-sky-700
-              sm:text-xl
-            "
-          >
-            Rp {product.price.toLocaleString("id-ID")}
-          </p>
+          {hasVariant ? (
+            <>
+              <p
+                className="
+        text-[10px]
+        font-medium
+        tracking-wide
+        text-gray-500
+        sm:text-xs
+      "
+              >
+                Mulai dari
+              </p>
 
-          <p
-            className="
-              text-[9px]
-              text-gray-400
-              sm:text-[11px]
-            "
-          >
-            /Kg
-          </p>
+              <p
+                className="
+        text-sm
+        font-bold
+        text-sky-700
+        sm:text-xl
+      "
+              >
+                Rp {lowestVariantPrice.toLocaleString("id-ID")}
+              </p>
+            </>
+          ) : (
+            <>
+              <p
+                className="
+        text-sm
+        font-bold
+        text-sky-700
+        sm:text-xl
+      "
+              >
+                Rp {product.price.toLocaleString("id-ID")}
+              </p>
 
-          <div className="mt-3 rounded-lg bg-gray-50 p-2 text-[11px] text-gray-600">
-            {isChicken && isFresh && (
+              <p
+                className="
+        text-[9px]
+        text-gray-400
+        sm:text-[11px]
+      "
+              >
+                /Kg
+              </p>
+            </>
+          )}
+
+          <div className="mt-3 flex min-h-[120px] flex-col rounded-lg bg-gray-50 p-3 text-[11px] text-gray-600">
+            {isChicken ? (
               <>
-                <p>🍗 Dipotong & Dibersihkan</p>
-                <p>🚚 Pengiriman H+1</p>
-              </>
-            )}
-
-            <p className="mt-2 text-xs font-medium text-gray-500">
-              Stok :
-              <span className="font-bold text-sky-700">
-                {isChicken ? `${displayStock} Ekor` : `${displayStock} Kg`}
-              </span>
-            </p>
-
-            {isChicken && isFrozen && (
-              <>
-                {product.stock > 0 && (
+                {isFresh ? (
+                  <>
+                    <p>🍗 Dipotong & Dibersihkan</p>
+                    <p>🚚 Pengiriman H+1</p>
+                  </>
+                ) : (
                   <>
                     <p>❄️ Ready Stock</p>
                     <p>🧊 Langsung Dikirim</p>
                   </>
                 )}
+
+                <div className="my-2 border-t"></div>
+
+                <p className="font-medium text-gray-500">
+                  Stok :
+                  <span className="font-bold text-sky-700">
+                    {" "}
+                    {displayStock} Ekor
+                  </span>
+                </p>
+
+                <div className="mt-auto pt-2">
+                  <p>📦 Pilih ukuran sesuai kebutuhan</p>
+                </div>
               </>
-            )}
-
-            {isFish && isFresh && (
+            ) : (
               <>
-                <p>🐟 Hasil Tangkapan Segar</p>
-                <p>🚚 Siap Dikirim</p>
-              </>
-            )}
+                <p className="font-medium text-gray-500">
+                  Stok :
+                  <span className="font-bold text-sky-700">
+                    {" "}
+                    {displayStock} Kg
+                  </span>
+                </p>
 
-            {isFish && isFrozen && (
-              <>
-                <p>🧊 Dibekukan Berkualitas</p>
+                {isFish && isFresh && (
+                  <>
+                    <p>🐟 Hasil Tangkapan Segar</p>
+                    <p>🚚 Siap Dikirim</p>
+                  </>
+                )}
 
-                {product.stock > 0 && <p>🚚 Ready Stock</p>}
+                {isFish && isFrozen && (
+                  <>
+                    <p>🧊 Dibekukan Berkualitas</p>
+
+                    {displayStock > 0 && <p>🚚 Ready Stock</p>}
+                  </>
+                )}
               </>
             )}
           </div>
@@ -260,7 +309,7 @@ export default function ProductCard({ product }: { product: Product }) {
               stock: product.stock ?? 0,
             });
           }}
-          disabled={hasVariant ? false : (product.stock ?? 0) <= 0}
+          disabled={!hasVariant && displayStock <= 0}
           className="
     mt-2
     flex
@@ -274,6 +323,9 @@ export default function ProductCard({ product }: { product: Product }) {
     text-[10px]
     font-semibold
     text-white
+    hover:bg-sky-800
+    disabled:bg-gray-300
+    disabled:cursor-not-allowed
     sm:py-2.5
     sm:text-sm
   "
@@ -282,7 +334,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
           {hasVariant
             ? "Pilih Berat"
-            : product.stock > 0
+            : displayStock > 0
               ? "+ Keranjang"
               : "Stok Habis"}
         </button>

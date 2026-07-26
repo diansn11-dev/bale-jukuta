@@ -2,6 +2,7 @@
 
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useRouter } from "next/navigation";
 
 type Props = {
   id: number;
@@ -10,9 +11,11 @@ type Props = {
   price: number;
   stock: number;
 
-  // Variant ayam
   variantId?: number;
   weight?: string;
+
+  hasVariant?: boolean;
+  slug?: string;
 };
 
 export default function AddToCartButton({
@@ -23,20 +26,24 @@ export default function AddToCartButton({
   stock,
   variantId,
   weight,
+  hasVariant = false,
+  slug,
 }: Props) {
   const { addToCart } = useCart();
+  const router = useRouter();
 
-  function handleAddToCart() {
+  function handleClick() {
+    // Produk memiliki varian tetapi belum dipilih
+    if (hasVariant && !variantId) {
+      router.push(`/produk/${slug}`);
+      return;
+    }
+
     addToCart({
-      // variant punya ID sendiri
       id: variantId ?? id,
-
-      // produk utama
       productId: id,
-
       variantId,
       weight,
-
       name,
       image,
       price,
@@ -48,13 +55,17 @@ export default function AddToCartButton({
   return (
     <button
       type="button"
-      disabled={stock <= 0}
-      onClick={handleAddToCart}
-      className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-sky-700 text-lg font-bold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:bg-gray-300"
+      onClick={handleClick}
+      disabled={!hasVariant && stock <= 0}
+      className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-sky-700 text-lg font-bold text-white transition hover:bg-sky-800 disabled:bg-gray-300"
     >
       <ShoppingCart size={20} />
 
-      {stock > 0 ? "Tambah ke Keranjang" : "Stok Habis"}
+      {hasVariant && !variantId
+        ? "Pilih Berat"
+        : stock > 0
+          ? "Tambah ke Keranjang"
+          : "Stok Habis"}
     </button>
   );
 }
