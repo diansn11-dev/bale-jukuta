@@ -6,7 +6,7 @@ const steps = [
     icon: Search,
     title: "Pilih Produk",
     description:
-      "Jelajahi berbagai pilihan ikan fresh dan frozen berkualitas sesuai kebutuhan Anda.",
+      "Jelajahi koleksi ikan fresh, ikan frozen, ayam fresh, dan ayam frozen pilihan dengan kualitas premium, kesegaran terjamin, diproses secara higienis, dan siap menjadi sajian terbaik untuk keluarga Anda.",
   },
   {
     number: "02",
@@ -27,7 +27,7 @@ const steps = [
     icon: Truck,
     title: "Pesanan Diproses",
     description:
-      "Tim kami akan memproses pesanan dan mengirimkan ikan segar secepat mungkin.",
+      "Admin kami akan memproses pesanan dan mengirimkan produk secepat mungkin.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function HowToOrder() {
           </span>
 
           <h2 className="mt-6 text-4xl font-bold text-slate-800">
-            Belanja Ikan Lebih Mudah
+            Lengkapi Kebutuhan Dapur dengan Ikan & Ayam Berkualitas
           </h2>
 
           <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-500">
