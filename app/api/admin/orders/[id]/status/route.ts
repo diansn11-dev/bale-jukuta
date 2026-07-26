@@ -132,7 +132,11 @@ export async function PATCH(
     });
 
     if (order.customer_phone) {
-      const pesan = `Halo ${order.customer_name} 👋
+      let pesan = "";
+
+      switch (order.status) {
+        case "pending":
+          pesan = `Halo ${order.customer_name} 👋
 
 Terima kasih telah berbelanja di Bale Juku' Ta'.
 
@@ -140,11 +144,87 @@ Terima kasih telah berbelanja di Bale Juku' Ta'.
 #${order.id}
 
 📌 Status Pesanan
-${statusText(order.status)}
+Menunggu Diproses
+
+Pesanan Anda telah kami terima dan akan segera diperiksa oleh Admin.
+
+Terima kasih atas kepercayaan Anda kepada Bale Juku' Ta'.`;
+          break;
+
+        case "processed":
+          pesan = `Halo ${order.customer_name} 👋
+
+Terima kasih telah berbelanja di Bale Juku' Ta'.
+
+📦 Nomor Pesanan
+#${order.id}
+
+📌 Status Pesanan
+Sedang Diproses
+
+Pesanan Anda sedang kami siapkan.
 
 Admin akan segera menghubungi untuk memberikan informasi mengenai rincian pesanan, total pembayaran, dan proses selanjutnya.
 
 Terima kasih atas kepercayaan Anda kepada Bale Juku' Ta'.`;
+          break;
+
+        case "shipped":
+          pesan = `Halo ${order.customer_name} 👋
+
+Kabar baik! 🎉
+
+Pesanan Anda telah dikirim.
+
+📦 Nomor Pesanan
+#${order.id}
+
+📌 Status Pesanan
+Sedang Dikirim
+
+Pesanan Anda sedang dalam perjalanan menuju alamat tujuan.
+
+Mohon menunggu hingga pesanan tiba.
+
+Terima kasih telah berbelanja di Bale Juku' Ta'. 🐟`;
+          break;
+
+        case "completed":
+          pesan = `Halo ${order.customer_name} 👋
+
+Pesanan Anda telah selesai.
+
+Terima kasih telah mempercayakan kebutuhan ikan dan ayam segar kepada Bale Juku' Ta'.
+
+Kami berharap produk yang diterima sesuai harapan.
+
+Kami tunggu pesanan Anda berikutnya.
+
+Salam hangat,
+Bale Juku' Ta'.`;
+          break;
+
+        case "cancelled":
+          pesan = `Halo ${order.customer_name} 👋
+
+Mohon maaf.
+
+Pesanan Anda dengan nomor #${order.id} telah dibatalkan.
+
+Apabila memiliki pertanyaan, silakan menghubungi Admin Bale Juku' Ta'.
+
+Terima kasih.`;
+          break;
+
+        default:
+          pesan = `Halo ${order.customer_name},
+
+Status pesanan Anda telah diperbarui menjadi:
+
+${statusText(order.status)}
+
+Terima kasih.`;
+      }
 
       try {
         console.log("MENGIRIM WHATSAPP...");
