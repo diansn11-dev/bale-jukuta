@@ -156,109 +156,6 @@ export default async function ProductDetail({ params }: Props) {
             )}
           </div>
 
-          {/* INFO */}
-
-          <div className="mt-8 space-y-4 rounded-2xl border bg-gray-50 p-6">
-            <div className="flex items-center gap-3">
-              <PackageCheck className="text-green-600" />
-
-              <span>
-                {isAyam ? (
-                  <span>Pilih berat ayam untuk melihat stok tersedia.</span>
-                ) : (
-                  <span>
-                    Stok tersedia
-                    <strong> {product.stock} Kg</strong>
-                  </span>
-                )}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              {isPreOrder ? (
-                <Clock3 className="text-orange-500" />
-              ) : (
-                <Truck className="text-sky-600" />
-              )}
-
-              <span>
-                {isPreOrder
-                  ? "Pengiriman dilakukan H+1 setelah produk diproses."
-                  : "Ready Stock dan dapat dikirim hari ini."}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="text-emerald-600" />
-
-              <span>Dijamin segar, higienis dan berkualitas.</span>
-            </div>
-          </div>
-
-          {/* ========================= */}
-          {/* INFORMASI AYAM */}
-          {/* ========================= */}
-
-          {isAyam && (
-            <div className="mt-6 rounded-2xl border border-orange-200 bg-orange-50 p-5">
-              <h3 className="font-bold text-orange-700">🍗 Informasi Ayam</h3>
-
-              <ul className="mt-4 space-y-2 text-sm text-gray-700">
-                <li>✅ Pilihan berat sesuai ukuran ayam.</li>
-
-                <li>✅ Harga mengikuti berat ayam.</li>
-
-                <li>🧼 Dibersihkan dan dikemas higienis.</li>
-
-                <li>🚚 Siap dikirim sesuai jenis produk.</li>
-              </ul>
-            </div>
-          )}
-
-          {/* ========================= */}
-          {/* INFORMASI IKAN FRESH */}
-          {/* ========================= */}
-
-          {isIkanFresh && (
-            <div className="mt-6 rounded-2xl border border-cyan-200 bg-cyan-50 p-5">
-              <h3 className="font-bold text-cyan-700">
-                🐟 Informasi Ikan Fresh
-              </h3>
-
-              <ul className="mt-4 space-y-2 text-sm text-gray-700">
-                <li>✅ Ikan segar pilihan.</li>
-
-                <li>🧊 Disimpan menggunakan es.</li>
-
-                <li>🚚 Pengiriman cepat.</li>
-
-                <li>💯 Kualitas premium.</li>
-              </ul>
-            </div>
-          )}
-
-          {/* ========================= */}
-          {/* INFORMASI IKAN FROZEN */}
-          {/* ========================= */}
-
-          {isIkanFrozen && (
-            <div className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-5">
-              <h3 className="font-bold text-blue-700">
-                ❄️ Informasi Ikan Frozen
-              </h3>
-
-              <ul className="mt-4 space-y-2 text-sm text-gray-700">
-                <li>✅ Dibekukan setelah proses.</li>
-
-                <li>❄️ Kualitas tetap terjaga.</li>
-
-                <li>📦 Kemasan higienis.</li>
-
-                <li>🚚 Ready Stock.</li>
-              </ul>
-            </div>
-          )}
-
           {/* ========================= */}
           {/* ACTION */}
           {/* ========================= */}
@@ -284,17 +181,6 @@ export default async function ProductDetail({ params }: Props) {
                 stock={product.stock}
               />
             )}
-
-            <a
-              href={`https://wa.me/6285111202275?text=${encodeURIComponent(
-                `Halo Admin Bale Juku' Ta'. Saya ingin memesan ${product.name}.`,
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-14 items-center justify-center rounded-2xl bg-green-600 text-lg font-bold text-white hover:bg-green-700"
-            >
-              💬 Pesan via WhatsApp
-            </a>
           </div>
         </div>
       </div>
