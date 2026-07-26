@@ -12,9 +12,14 @@ export default function OrderStatusSelect({
 }) {
   const router = useRouter();
 
+  const [currentStatus, setCurrentStatus] = useState(status);
   const [loading, setLoading] = useState(false);
 
   async function updateStatus(value: string) {
+    const oldStatus = currentStatus;
+
+    setCurrentStatus(value);
+
     try {
       setLoading(true);
 
@@ -33,6 +38,8 @@ export default function OrderStatusSelect({
       const result = await response.json();
 
       if (!result.success) {
+        setCurrentStatus(oldStatus);
+
         alert(result.error || "Gagal mengubah status pesanan");
 
         return;
@@ -42,6 +49,8 @@ export default function OrderStatusSelect({
     } catch (error) {
       console.error("UPDATE STATUS ERROR:", error);
 
+      setCurrentStatus(oldStatus);
+
       alert("Terjadi kesalahan saat mengubah status");
     } finally {
       setLoading(false);
@@ -50,7 +59,7 @@ export default function OrderStatusSelect({
 
   return (
     <select
-      defaultValue={status}
+      value={currentStatus}
       disabled={loading}
       onChange={(e) => updateStatus(e.target.value)}
       className="

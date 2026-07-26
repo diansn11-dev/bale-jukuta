@@ -83,7 +83,7 @@ export async function PATCH(
     }
 
     // ======================
-    // AMBIL ORDER
+    // AMBIL DATA ORDER
     // ======================
 
     const { data: oldOrder, error: getError } = await supabaseAdmin
@@ -122,8 +122,14 @@ export async function PATCH(
     }
 
     // ======================
-    // WHATSAPP
+    // KIRIM WHATSAPP
     // ======================
+
+    console.log("ORDER DATA UNTUK WA:", {
+      id: order.id,
+      name: order.customer_name,
+      phone: order.customer_phone,
+    });
 
     if (order.customer_phone) {
       const pesan = `Halo ${order.customer_name} 👋
@@ -133,26 +139,39 @@ Pesanan Anda di Bale Juku' Ta' telah diperbarui.
 📦 Nomor Pesanan
 #${order.id}
 
-📌 Status
+📌 Status Pesanan
 ${statusText(order.status)}
 
-💰 Total
+💰 Total Pesanan
 Rp ${Number(order.total_price ?? 0).toLocaleString("id-ID")}
 
 Terima kasih telah berbelanja di Bale Juku' Ta' 🐟`;
 
       try {
-        await sendWhatsApp(order.customer_phone, pesan);
+        console.log("MENGIRIM WHATSAPP...");
+
+        console.log("DATA CUSTOMER WA:", {
+          nama: order.customer_name,
+          nomor_database: order.customer_phone,
+        });
+
+        const result = await sendWhatsApp(order.customer_phone, pesan);
+
+        console.log("HASIL FONNTE:", result);
       } catch (error) {
         console.error("WhatsApp gagal:", error);
       }
+    } else {
+      console.log("CUSTOMER PHONE KOSONG");
     }
+
+    // ======================
+    // RESPONSE
+    // ======================
 
     return NextResponse.json({
       success: true,
-
       order,
-
       message: "Status berhasil diperbarui.",
     });
   } catch (error: any) {
@@ -163,7 +182,6 @@ Terima kasih telah berbelanja di Bale Juku' Ta' 🐟`;
         success: false,
         error: error.message,
       },
-
       {
         status: 500,
       },

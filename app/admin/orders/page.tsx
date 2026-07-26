@@ -10,6 +10,9 @@ import {
 
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import PaymentStatusSelect from "@/components/PaymentStatusSelect";
+import OrderStatusSelect from "@/components/admin/OrderStatusSelect";
+
+export const dynamic = "force-dynamic";
 
 function getStatus(status: string) {
   switch (status) {
@@ -180,24 +183,26 @@ text-gray-800
 
                 {/* STATUS */}
 
-                <div>
+                <div className="space-y-3">
                   <span
                     className={`
-inline-flex
-items-center
-gap-2
-rounded-full
-px-4
-py-2
-text-sm
-font-semibold
-${status.color}
-`}
+    inline-flex
+    items-center
+    gap-2
+    rounded-full
+    px-4
+    py-2
+    text-sm
+    font-semibold
+    ${status.color}
+    `}
                   >
                     <Icon size={16} />
 
                     {status.text}
                   </span>
+
+                  <OrderStatusSelect orderId={order.id} status={order.status} />
                 </div>
               </div>
 

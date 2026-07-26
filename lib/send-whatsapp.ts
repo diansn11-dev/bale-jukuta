@@ -1,5 +1,3 @@
-// lib/send-whatsapp.ts
-
 export async function sendWhatsApp(phone: string, message: string) {
   const token = process.env.FONNTE_TOKEN;
 
@@ -7,7 +5,15 @@ export async function sendWhatsApp(phone: string, message: string) {
     throw new Error("FONNTE_TOKEN belum tersedia");
   }
 
-  const formattedPhone = phone.startsWith("0") ? "62" + phone.slice(1) : phone;
+  let formattedPhone = phone.replace(/\D/g, "");
+
+  if (formattedPhone.startsWith("08")) {
+    formattedPhone = "62" + formattedPhone.slice(1);
+  }
+
+  if (formattedPhone.startsWith("8")) {
+    formattedPhone = "62" + formattedPhone;
+  }
 
   console.log("KIRIM WHATSAPP KE:", formattedPhone);
 
@@ -16,22 +22,21 @@ export async function sendWhatsApp(phone: string, message: string) {
 
     headers: {
       Authorization: token,
-
       "Content-Type": "application/json",
     },
 
     body: JSON.stringify({
       target: formattedPhone,
-
       message,
     }),
   });
 
   const result = await response.json();
 
+  console.log("STATUS FONNTE:", response.status);
   console.log("FONNTE RESPONSE:", result);
 
-  if (!response.ok) {
+  if (!response.ok || result.status === false) {
     throw new Error(result.reason || "Gagal kirim WhatsApp");
   }
 
