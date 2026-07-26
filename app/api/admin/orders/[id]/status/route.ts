@@ -134,7 +134,7 @@ export async function PATCH(
     if (order.customer_phone) {
       const pesan = `Halo ${order.customer_name} 👋
 
-Pesanan Anda di Bale Juku' Ta' telah diperbarui.
+Terima kasih telah berbelanja di Bale Juku' Ta'.
 
 📦 Nomor Pesanan
 #${order.id}
@@ -142,10 +142,9 @@ Pesanan Anda di Bale Juku' Ta' telah diperbarui.
 📌 Status Pesanan
 ${statusText(order.status)}
 
-💰 Total Pesanan
-Rp ${Number(order.total_price ?? 0).toLocaleString("id-ID")}
+Admin akan segera menghubungi untuk memberikan informasi mengenai rincian pesanan, total pembayaran, dan proses selanjutnya.
 
-Terima kasih telah berbelanja di Bale Juku' Ta' 🐟`;
+Terima kasih atas kepercayaan Anda kepada Bale Juku' Ta'.`;
 
       try {
         console.log("MENGIRIM WHATSAPP...");

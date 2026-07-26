@@ -85,82 +85,54 @@ export default function KeranjangPage() {
 
       const jam = new Date().getHours();
 
-      const pesanWhatsApp = `PESANAN BARU BALE JUKU' TA'
+      const pesanWhatsApp = `Halo Admin Bale Juku' Ta'.
 
-Halo Admin!
+Saya telah melakukan pemesanan melalui website Bale Juku' Ta'.
 
-Saya telah melakukan pemesanan melalui website Bale Juku' Ta'. Berikut detail pesanan saya.
-
-Informasi Pesanan
-
-No. Pesanan : #${result.order.id}
-Tanggal : ${new Date().toLocaleString("id-ID", {
-        dateStyle: "full",
-        timeStyle: "short",
-      })}
-
-Data Pembeli
+*Data Pembeli*
 
 Nama : ${nama}
 WhatsApp : ${nomor}
 
-Pengiriman
+*Pengiriman*
 
 Metode : ${deliveryMethod}
 
 ${
   deliveryMethod === "Diantar"
     ? `Alamat :
-${alamat}
-
-Ongkos kirim akan diinformasikan setelah pesanan dikonfirmasi Admin.`
-    : `Pesanan akan diambil langsung di toko.`
+${alamat}`
+    : "Pesanan akan diambil langsung di toko."
 }
 
-Pembayaran
+*Metode Pembayaran*
 
-Metode : ${paymentMethod}
+${paymentMethod}
 
-${
-  paymentMethod === "COD"
-    ? "Pembayaran dilakukan saat pesanan diterima."
-    : paymentMethod === "QRIS"
-      ? "Mohon kirimkan kode QRIS untuk proses pembayaran."
-      : "Mohon kirimkan nomor rekening untuk proses pembayaran."
-}
-
-Detail Pesanan
+*Detail Pesanan*
 
 ${cart
   .map(
     (item, index) => `${index + 1}. ${item.name}
-${item.variantType ? `   Jenis   : ${item.variantType}` : ""}
-${item.weight ? `   Berat   : ${item.weight}` : ""}
-   Jumlah  : ${item.quantity} ${item.weight ? "Ekor" : "Kg"}
-   Harga   : Rp ${item.price.toLocaleString("id-ID")}${item.weight ? " / Ekor" : " / Kg"}
-   Subtotal: Rp ${(item.price * item.quantity).toLocaleString("id-ID")}
+${item.variantType ? `   Jenis  : ${item.variantType}` : ""}
+${item.weight ? `   Berat  : ${item.weight}` : ""}
+   Jumlah : ${item.quantity} ${item.weight ? "Ekor" : "Kg"}
+   Harga  : Rp ${item.price.toLocaleString("id-ID")}${item.weight ? " / Ekor" : " / Kg"}
 `,
   )
   .join("\n")}
 
-Ringkasan Pembayaran
-
-Subtotal : Rp ${total.toLocaleString("id-ID")}
-${
-  deliveryMethod === "Diantar"
-    ? "Ongkir : Menunggu konfirmasi Admin"
-    : "Ongkir : Rp 0"
-}
-Total Sementara : Rp ${total.toLocaleString("id-ID")}
-
-Catatan
+*Catatan*
 
 ${catatan || "-"}
 
-Terima kasih.
+*Informasi*
 
-Mohon konfirmasi pesanan ini apabila telah diterima.
-`;
+Harga yang tercantum merupakan harga produk saat pemesanan.
+
+Total pembayaran akhir, ongkos kirim (jika ada), serta ketersediaan produk akan dikonfirmasi kembali oleh Admin Bale Juku' Ta' sebelum proses pembayaran dan pengiriman.
+
+Terima kasih telah berbelanja di Bale Juku' Ta'. 🐟`;
 
       clearCart();
 
