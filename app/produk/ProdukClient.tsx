@@ -25,6 +25,9 @@ type Product = {
     stock: number;
   }[];
 };
+type Props = {
+  products: Product[];
+};
 
 export default function ProdukClient({ products }: Props) {
   const [search, setSearch] = useState("");
